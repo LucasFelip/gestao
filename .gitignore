@@ -1,0 +1,49 @@
+# IntelliJ specific #
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+
+# Maven #
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# Gradle #
+.gradle
+/build/
+
+# Logs e arquivos temporários #
+*.log
+*.tmp
+*.temp
+
+# Arquivos do sistema operacional #
+.DS_Store
+Thumbs.db
+
+# Diretórios de pacotes #
+/node_modules/
+/bower_components/
+
+# Arquivos de pacotes #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Outros arquivos e diretórios #
+*.class
+*.swp
+*~$
+/__MACOSX/
