@@ -21,7 +21,4 @@ public class Orcamento {
     private Date inicio;
     private Date fim;
     private float limite;
-    @OneToOne
-    @JoinColumn(name = "categoria_id")
-    private Categoria categoria;
 }

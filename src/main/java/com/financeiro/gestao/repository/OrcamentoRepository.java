@@ -11,7 +11,5 @@ import java.util.List;
 public interface OrcamentoRepository extends JpaRepository<Orcamento, Long> {
     List<Orcamento> findByPessoaId(Long pessoaId);
     List<Orcamento> findByInicioBetweenOrFimBetween(Date inicioStart, Date inicioEnd, Date fimStart, Date fimEnd);
-    List<Orcamento> findByCategoriaId(Long categoriaId);
     List<Orcamento> findByLimiteGreaterThan(float limite);
-    List<Orcamento> findByPessoaIdAndCategoriaId(Long pessoaId, Long categoriaId);
 }

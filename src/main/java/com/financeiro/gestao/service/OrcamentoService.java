@@ -48,7 +48,6 @@ public class OrcamentoService {
         orcamento.setInicio(orcamentoAtualizado.getInicio());
         orcamento.setFim(orcamentoAtualizado.getFim());
         orcamento.setLimite(orcamentoAtualizado.getLimite());
-        orcamento.setCategoria(orcamentoAtualizado.getCategoria());
 
         validarOrcamento(orcamento);
 
@@ -73,7 +72,7 @@ public class OrcamentoService {
         }
 
         // Verificação de Sobreposição de Orçamento
-        List<Orcamento> orcamentosExistentes = orcamentoRepository.findByPessoaIdAndCategoriaId(orcamento.getPessoa().getId(), orcamento.getCategoria().getId());
+        List<Orcamento> orcamentosExistentes = orcamentoRepository.findByPessoaId(orcamento.getPessoa().getId());
         for (Orcamento existente : orcamentosExistentes) {
             if (orcamento.getId() == null || !orcamento.getId().equals(existente.getId())) { // Ignora o próprio orçamento em caso de atualização
                 if (periodosSobrepoe(orcamento.getInicio(), orcamento.getFim(), existente.getInicio(), existente.getFim())) {
