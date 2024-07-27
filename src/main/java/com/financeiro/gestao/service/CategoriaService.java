@@ -26,53 +26,20 @@ public class CategoriaService {
         return categoriaRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
-    public Optional<Categoria> findById(Long id) {
-        return Optional.ofNullable(categoriaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada com o ID: " + id)));
-    }
-
     @Transactional
     public Categoria save(Categoria categoria) {
-        validarCategoria(categoria, null);
+        validarCategoria(categoria);
         return categoriaRepository.save(categoria);
     }
 
-    @Transactional
-    public Categoria update(Long id, Categoria categoriaAtualizada) {
-        Categoria categoria = categoriaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada com o ID: " + id));
-
-        validarCategoria(categoriaAtualizada, id);
-
-        categoria.setNome(categoriaAtualizada.getNome());
-        categoria.setDescricao(categoriaAtualizada.getDescricao());
-
-        return categoriaRepository.save(categoria);
-    }
-
-    @Transactional
-    public void delete(Long id) {
-        if (!categoriaRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Categoria não encontrada com o ID: " + id);
-        }
-        categoriaRepository.deleteById(id);
-    }
-
-    private void validarCategoria(Categoria categoria, Long idAtualizacao) {
+    private void validarCategoria(Categoria categoria) {
         if (categoria.getNome() == null || categoria.getNome().trim().isEmpty()) {
             throw new BusinessRuleException("O nome da categoria não pode estar vazio.");
         }
 
         // Verificar se o nome da categoria já existe
-        Optional<Categoria> categoriaExistente = categoriaRepository.findByNome(categoria.getNome());
-        if (categoriaExistente.isPresent() && (idAtualizacao == null || !categoriaExistente.get().getId().equals(idAtualizacao))) {
+        if (categoriaRepository.existsByNome(categoria.getNome())) {
             throw new BusinessRuleException("Já existe uma categoria com esse nome.");
-        }
-
-        // Validação da descrição da categoria
-        if (categoria.getDescricao() != null && categoria.getDescricao().trim().isEmpty()) {
-            throw new BusinessRuleException("A descrição da categoria não pode estar vazia se fornecida.");
         }
 
         // Validação de caracteres especiais no nome
@@ -84,8 +51,19 @@ public class CategoriaService {
         if (categoria.getNome().length() > 50) {
             throw new BusinessRuleException("O nome da categoria não pode exceder 50 caracteres.");
         }
-        if (categoria.getDescricao() != null && categoria.getDescricao().length() > 255) {
-            throw new BusinessRuleException("A descrição da categoria não pode exceder 255 caracteres.");
+    }
+
+    @Transactional(readOnly = true)
+    public List<Categoria> buscarCategoria(String nomeCategoria) {
+        if (nomeCategoria == null || nomeCategoria.trim().isEmpty()) {
+            throw new BusinessRuleException("O nome da categoria para busca não pode estar vazio.");
         }
+
+        List<Categoria> categorias = categoriaRepository.findByNomeContaining(nomeCategoria);
+        if (categorias.isEmpty()) {
+            throw new BusinessRuleException("Nenhuma categoria encontrada com o nome fornecido.");
+        }
+
+        return categorias;
     }
 }

@@ -36,6 +36,36 @@ public class GastoService {
                 .orElseThrow(() -> new ResourceNotFoundException("Gasto não encontrado com o ID: " + id)));
     }
 
+    @Transactional(readOnly = true)
+    public List<Gasto> findByPessoaId(Long pessoaId) {
+        return gastoRepository.findByPessoaId(pessoaId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Gasto> findByDataBetween(Date inicio, Date fim) {
+        return gastoRepository.findByDataBetween(inicio, fim);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Gasto> findByCategoriaId(Long categoriaId) {
+        return gastoRepository.findByCategoriaId(categoriaId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Gasto> findByDescricaoContaining(String descricao) {
+        return gastoRepository.findByDescricaoContaining(descricao);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Gasto> findByValorGreaterThan(float valor) {
+        return gastoRepository.findByValorGreaterThan(valor);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Gasto> findByPessoaIdAndCategoriaId(Long pessoaId, Long categoriaId) {
+        return gastoRepository.findByPessoaIdAndCategoriaId(pessoaId, categoriaId);
+    }
+
     @Transactional
     public Gasto save(Gasto gasto) {
         validarGasto(gasto);
@@ -84,4 +114,3 @@ public class GastoService {
         }
     }
 }
-
