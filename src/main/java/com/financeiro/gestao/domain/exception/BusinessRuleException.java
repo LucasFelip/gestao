@@ -1,4 +1,4 @@
-package com.financeiro.gestao.exception;
+package com.financeiro.gestao.domain.exception;
 
 public class BusinessRuleException extends RuntimeException {
 

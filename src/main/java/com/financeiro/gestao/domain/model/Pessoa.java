@@ -1,4 +1,4 @@
-package com.financeiro.gestao.model;
+package com.financeiro.gestao.domain.model;
 
 import java.util.List;
 import lombok.*;
@@ -19,6 +19,7 @@ public class Pessoa {
     private String cpf;
     private String email;
     private String senha;
+    private String telefone;
     private String endereco;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "pessoa")
     private List<Gasto> gastos;

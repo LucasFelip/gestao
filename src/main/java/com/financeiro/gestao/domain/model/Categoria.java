@@ -1,4 +1,4 @@
-package com.financeiro.gestao.model;
+package com.financeiro.gestao.domain.model;
 
 import lombok.*;
 import jakarta.persistence.*;

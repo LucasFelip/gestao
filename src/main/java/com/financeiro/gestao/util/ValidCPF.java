@@ -1,4 +1,4 @@
-package com.financeiro.gestao.utils;
+package com.financeiro.gestao.util;
 
 public class ValidCPF {
     public static boolean isValidCPF(String cpf) {

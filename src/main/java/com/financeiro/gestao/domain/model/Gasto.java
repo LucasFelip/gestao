@@ -1,4 +1,4 @@
-package com.financeiro.gestao.model;
+package com.financeiro.gestao.domain.model;
 
 import lombok.*;
 import jakarta.persistence.*;
@@ -10,8 +10,8 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(name = "lucro")
-public class Lucro {
+@Table(name = "gasto")
+public class Gasto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,6 +22,6 @@ public class Lucro {
     @OneToOne
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
-    private float valor;
+    private Double valor;
     private Date data;
 }

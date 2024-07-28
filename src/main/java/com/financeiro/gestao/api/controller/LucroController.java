@@ -1,0 +1,94 @@
+package com.financeiro.gestao.api.controller;
+
+import com.financeiro.gestao.api.dto.LucroDTO;
+import com.financeiro.gestao.domain.model.Lucro;
+import com.financeiro.gestao.domain.service.LucroService;
+import com.financeiro.gestao.util.EntityToDTOConverter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/lucros")
+public class LucroController {
+
+    private final LucroService lucroService;
+
+    @Autowired
+    public LucroController(LucroService lucroService) {
+        this.lucroService = lucroService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<LucroDTO>> findAll() {
+        List<LucroDTO> lucros = lucroService.findAll();
+        return ResponseEntity.ok(lucros);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<LucroDTO> findById(@PathVariable Long id) {
+        return lucroService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/pessoa/{pessoaId}")
+    public ResponseEntity<List<LucroDTO>> findByPessoaId(@PathVariable Long pessoaId) {
+        List<LucroDTO> lucros = lucroService.findByPessoaId(pessoaId);
+        return ResponseEntity.ok(lucros);
+    }
+
+    @GetMapping("/data")
+    public ResponseEntity<List<LucroDTO>> findByDataBetween(@RequestParam Date inicio, @RequestParam Date fim) {
+        List<LucroDTO> lucros = lucroService.findByDataBetween(inicio, fim);
+        return ResponseEntity.ok(lucros);
+    }
+
+    @GetMapping("/categoria/{categoriaId}")
+    public ResponseEntity<List<LucroDTO>> findByCategoriaId(@PathVariable Long categoriaId) {
+        List<LucroDTO> lucros = lucroService.findByCategoriaId(categoriaId);
+        return ResponseEntity.ok(lucros);
+    }
+
+    @GetMapping("/descricao")
+    public ResponseEntity<List<LucroDTO>> findByDescricaoContaining(@RequestParam String descricao) {
+        List<LucroDTO> lucros = lucroService.findByDescricaoContaining(descricao);
+        return ResponseEntity.ok(lucros);
+    }
+
+    @GetMapping("/valor")
+    public ResponseEntity<List<LucroDTO>> findByValorGreaterThan(@RequestParam float valor) {
+        List<LucroDTO> lucros = lucroService.findByValorGreaterThan(valor);
+        return ResponseEntity.ok(lucros);
+    }
+
+    @GetMapping("/pessoa/{pessoaId}/categoria/{categoriaId}")
+    public ResponseEntity<List<LucroDTO>> findByPessoaIdAndCategoriaId(@PathVariable Long pessoaId, @PathVariable Long categoriaId) {
+        List<LucroDTO> lucros = lucroService.findByPessoaIdAndCategoriaId(pessoaId, categoriaId);
+        return ResponseEntity.ok(lucros);
+    }
+
+    @PostMapping
+    public ResponseEntity<LucroDTO> save(@RequestBody Lucro lucro) {
+        Lucro savedLucro = lucroService.save(lucro);
+        LucroDTO lucroDTO = EntityToDTOConverter.convertToDTO(savedLucro);
+        return ResponseEntity.status(HttpStatus.CREATED).body(lucroDTO);
+    }
+
+    @PutMapping("/atualizar/{id}")
+    public ResponseEntity<LucroDTO> update(@PathVariable Long id, @RequestBody Lucro lucroAtualizado) {
+        Lucro updatedLucro = lucroService.update(id, lucroAtualizado);
+        LucroDTO lucroDTO = EntityToDTOConverter.convertToDTO(updatedLucro);
+        return ResponseEntity.ok(lucroDTO);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        lucroService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+}

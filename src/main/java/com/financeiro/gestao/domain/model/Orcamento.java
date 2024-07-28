@@ -1,4 +1,4 @@
-package com.financeiro.gestao.model;
+package com.financeiro.gestao.domain.model;
 
 import lombok.*;
 import jakarta.persistence.*;
@@ -18,7 +18,7 @@ public class Orcamento {
     @ManyToOne
     @JoinColumn(name = "pessoa_id")
     private Pessoa pessoa;
-    private Date inicio;
-    private Date fim;
-    private float limite;
+    private Date dataInicio;
+    private Date dataFim;
+    private Double limite;
 }

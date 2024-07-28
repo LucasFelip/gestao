@@ -1,6 +1,6 @@
-package com.financeiro.gestao.repository;
+package com.financeiro.gestao.domain.repository;
 
-import com.financeiro.gestao.model.Categoria;
+import com.financeiro.gestao.domain.model.Categoria;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
