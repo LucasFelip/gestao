@@ -2,6 +2,8 @@ package com.financeiro.gestao.domain.model;
 
 import lombok.*;
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -18,7 +20,7 @@ public class Orcamento {
     @ManyToOne
     @JoinColumn(name = "pessoa_id")
     private Pessoa pessoa;
-    private Date dataInicio;
-    private Date dataFim;
+    private LocalDate dataInicio;
+    private LocalDate dataFim;
     private Double limite;
 }

@@ -3,6 +3,8 @@ package com.financeiro.gestao.domain.service;
 import com.financeiro.gestao.api.dto.LucroDTO;
 import com.financeiro.gestao.domain.exception.BusinessRuleException;
 import com.financeiro.gestao.domain.exception.ResourceNotFoundException;
+import com.financeiro.gestao.domain.model.Categoria;
+import com.financeiro.gestao.domain.model.Pessoa;
 import com.financeiro.gestao.domain.repository.CategoriaRepository;
 import com.financeiro.gestao.domain.repository.LucroRepository;
 import com.financeiro.gestao.domain.model.Lucro;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -44,15 +47,15 @@ public class LucroService {
     }
 
     @Transactional(readOnly = true)
-    public List<LucroDTO> findByPessoaId(Long pessoaId) {
-        List<Lucro> lucros = lucroRepository.findByPessoaId(pessoaId);
+    public List<LucroDTO> findByPessoa(Pessoa pessoa) {
+        List<Lucro> lucros = lucroRepository.findByPessoa(pessoa);
         return lucros.stream()
                 .map(EntityToDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<LucroDTO> findByDataBetween(Date inicio, Date fim) {
+    public List<LucroDTO> findByDataBetween(LocalDate inicio, LocalDate fim) {
         List<Lucro> lucros = lucroRepository.findByDataBetween(inicio, fim);
         return lucros.stream()
                 .map(EntityToDTOConverter::convertToDTO)
@@ -60,8 +63,8 @@ public class LucroService {
     }
 
     @Transactional(readOnly = true)
-    public List<LucroDTO> findByCategoriaId(Long categoriaId) {
-        List<Lucro> lucros = lucroRepository.findByCategoriaId(categoriaId);
+    public List<LucroDTO> findByCategoria(Categoria categoria) {
+        List<Lucro> lucros = lucroRepository.findByCategoria(categoria);
         return lucros.stream()
                 .map(EntityToDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
@@ -76,7 +79,7 @@ public class LucroService {
     }
 
     @Transactional(readOnly = true)
-    public List<LucroDTO> findByValorGreaterThan(float valor) {
+    public List<LucroDTO> findByValorGreaterThan(Double valor) {
         List<Lucro> lucros = lucroRepository.findByValorGreaterThan(valor);
         return lucros.stream()
                 .map(EntityToDTOConverter::convertToDTO)
@@ -130,9 +133,9 @@ public class LucroService {
             throw new BusinessRuleException("A categoria de lucro especificada não existe.");
         }
 
-        if (lucro.getData().after(new Date())) {
-            throw new BusinessRuleException("A data do lucro não pode ser uma data futura.");
-        }
+//        if (lucro.getData().after(new Date())) {
+//            throw new BusinessRuleException("A data do lucro não pode ser uma data futura.");
+//        }
 
         if (lucro.getDescricao() == null || lucro.getDescricao().trim().isEmpty()) {
             throw new BusinessRuleException("A descrição do lucro não pode estar vazia.");

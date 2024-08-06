@@ -2,6 +2,8 @@ package com.financeiro.gestao.domain.model;
 
 import lombok.*;
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -23,5 +25,5 @@ public class Lucro {
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
     private Double valor;
-    private Date data;
+    private LocalDate data;
 }

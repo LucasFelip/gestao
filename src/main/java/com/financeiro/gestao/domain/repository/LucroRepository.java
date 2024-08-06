@@ -1,18 +1,21 @@
 package com.financeiro.gestao.domain.repository;
 
+import com.financeiro.gestao.domain.model.Categoria;
 import com.financeiro.gestao.domain.model.Lucro;
+import com.financeiro.gestao.domain.model.Pessoa;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
 @Repository
 public interface LucroRepository extends JpaRepository<Lucro, Long> {
-    List<Lucro> findByPessoaId(Long pessoaId);
-    List<Lucro> findByDataBetween(Date inicio, Date fim);
-    List<Lucro> findByCategoriaId(Long categoriaId);
+    List<Lucro> findByPessoa(Pessoa pessoa);
+    List<Lucro> findByDataBetween(LocalDate inicio, LocalDate fim);
+    List<Lucro> findByCategoria(Categoria categoria);
     List<Lucro> findByDescricaoContaining(String descricao);
-    List<Lucro> findByValorGreaterThan(float valor);
+    List<Lucro> findByValorGreaterThan(Double valor);
     List<Lucro> findByPessoaIdAndCategoriaId(Long pessoaId, Long categoriaId);
 }

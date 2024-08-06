@@ -3,13 +3,16 @@ package com.financeiro.gestao.domain.service;
 import com.financeiro.gestao.api.dto.GastoDTO;
 import com.financeiro.gestao.domain.exception.BusinessRuleException;
 import com.financeiro.gestao.domain.exception.ResourceNotFoundException;
+import com.financeiro.gestao.domain.model.Categoria;
 import com.financeiro.gestao.domain.model.Gasto;
+import com.financeiro.gestao.domain.model.Pessoa;
 import com.financeiro.gestao.domain.repository.GastoRepository;
 import com.financeiro.gestao.util.EntityToDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -41,15 +44,15 @@ public class GastoService {
     }
 
     @Transactional(readOnly = true)
-    public List<GastoDTO> findByPessoaId(Long pessoaId) {
-        List<Gasto> gastos = gastoRepository.findByPessoaId(pessoaId);
+    public List<GastoDTO> findByPessoa(Pessoa pessoa) {
+        List<Gasto> gastos = gastoRepository.findByPessoa(pessoa);
         return gastos.stream()
                 .map(EntityToDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<GastoDTO> findByDataBetween(Date inicio, Date fim) {
+    public List<GastoDTO> findByDataBetween(LocalDate inicio, LocalDate fim) {
         List<Gasto> gastos = gastoRepository.findByDataBetween(inicio, fim);
         return gastos.stream()
                 .map(EntityToDTOConverter::convertToDTO)
@@ -57,8 +60,8 @@ public class GastoService {
     }
 
     @Transactional(readOnly = true)
-    public List<GastoDTO> findByCategoriaId(Long categoriaId) {
-        List<Gasto> gastos = gastoRepository.findByCategoriaId(categoriaId);
+    public List<GastoDTO> findByCategoria(Categoria categoria) {
+        List<Gasto> gastos = gastoRepository.findByCategoria(categoria);
         return gastos.stream()
                 .map(EntityToDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
@@ -73,7 +76,7 @@ public class GastoService {
     }
 
     @Transactional(readOnly = true)
-    public List<GastoDTO> findByValorGreaterThan(float valor) {
+    public List<GastoDTO> findByValorGreaterThan(Double valor) {
         List<Gasto> gastos = gastoRepository.findByValorGreaterThan(valor);
         return gastos.stream()
                 .map(EntityToDTOConverter::convertToDTO)
@@ -81,8 +84,8 @@ public class GastoService {
     }
 
     @Transactional(readOnly = true)
-    public List<GastoDTO> findByPessoaIdAndCategoriaId(Long pessoaId, Long categoriaId) {
-        List<Gasto> gastos = gastoRepository.findByPessoaIdAndCategoriaId(pessoaId, categoriaId);
+    public List<GastoDTO> findByPessoaAndCategoria(Pessoa pessoa, Categoria categoria) {
+        List<Gasto> gastos = gastoRepository.findByPessoaAndCategoria(pessoa, categoria);
         return gastos.stream()
                 .map(EntityToDTOConverter::convertToDTO)
                 .collect(Collectors.toList());

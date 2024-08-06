@@ -2,6 +2,7 @@ package com.financeiro.gestao.api.controller;
 
 import com.financeiro.gestao.api.dto.OrcamentoDTO;
 import com.financeiro.gestao.domain.model.Orcamento;
+import com.financeiro.gestao.domain.model.Pessoa;
 import com.financeiro.gestao.domain.service.OrcamentoService;
 import com.financeiro.gestao.util.EntityToDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -37,23 +39,23 @@ public class OrcamentoController {
     }
 
     @GetMapping("/pessoa/{pessoaId}")
-    public ResponseEntity<List<OrcamentoDTO>> findByPessoaId(@PathVariable Long pessoaId) {
-        List<OrcamentoDTO> orcamentos = orcamentoService.findByPessoaId(pessoaId);
+    public ResponseEntity<List<OrcamentoDTO>> findByPessoaId(@PathVariable Pessoa pessoa) {
+        List<OrcamentoDTO> orcamentos = orcamentoService.findByPessoa(pessoa);
         return ResponseEntity.ok(orcamentos);
     }
 
     @GetMapping("/data")
     public ResponseEntity<List<OrcamentoDTO>> findByDataInicioBetweenOrDataFimBetween(
-            @RequestParam Date inicioStart,
-            @RequestParam Date inicioEnd,
-            @RequestParam Date fimStart,
-            @RequestParam Date fimEnd) {
+            @RequestParam LocalDate inicioStart,
+            @RequestParam LocalDate inicioEnd,
+            @RequestParam LocalDate fimStart,
+            @RequestParam LocalDate fimEnd) {
         List<OrcamentoDTO> orcamentos = orcamentoService.findByDataInicioBetweenOrDataFimBetween(inicioStart, inicioEnd, fimStart, fimEnd);
         return ResponseEntity.ok(orcamentos);
     }
 
     @GetMapping("/limite")
-    public ResponseEntity<List<OrcamentoDTO>> findByLimiteGreaterThan(@RequestParam float limite) {
+    public ResponseEntity<List<OrcamentoDTO>> findByLimiteGreaterThan(@RequestParam Double limite) {
         List<OrcamentoDTO> orcamentos = orcamentoService.findByLimiteGreaterThan(limite);
         return ResponseEntity.ok(orcamentos);
     }

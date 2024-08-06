@@ -1,7 +1,9 @@
 package com.financeiro.gestao.api.controller;
 
 import com.financeiro.gestao.api.dto.GastoDTO;
+import com.financeiro.gestao.domain.model.Categoria;
 import com.financeiro.gestao.domain.model.Gasto;
+import com.financeiro.gestao.domain.model.Pessoa;
 import com.financeiro.gestao.domain.service.GastoService;
 import com.financeiro.gestao.util.EntityToDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -37,20 +40,20 @@ public class GastoController {
     }
 
     @GetMapping("/pessoa/{pessoaId}")
-    public ResponseEntity<List<GastoDTO>> findByPessoaId(@PathVariable Long pessoaId) {
-        List<GastoDTO> gastos = gastoService.findByPessoaId(pessoaId);
+    public ResponseEntity<List<GastoDTO>> findByPessoaId(@PathVariable Pessoa pessoa) {
+        List<GastoDTO> gastos = gastoService.findByPessoa(pessoa);
         return ResponseEntity.ok(gastos);
     }
 
     @GetMapping("/data")
-    public ResponseEntity<List<GastoDTO>> findByDataBetween(@RequestParam Date inicio, @RequestParam Date fim) {
+    public ResponseEntity<List<GastoDTO>> findByDataBetween(@RequestParam LocalDate inicio, @RequestParam LocalDate fim) {
         List<GastoDTO> gastos = gastoService.findByDataBetween(inicio, fim);
         return ResponseEntity.ok(gastos);
     }
 
     @GetMapping("/categoria/{categoriaId}")
-    public ResponseEntity<List<GastoDTO>> findByCategoriaId(@PathVariable Long categoriaId) {
-        List<GastoDTO> gastos = gastoService.findByCategoriaId(categoriaId);
+    public ResponseEntity<List<GastoDTO>> findByCategoriaId(@PathVariable Categoria categoria) {
+        List<GastoDTO> gastos = gastoService.findByCategoria(categoria);
         return ResponseEntity.ok(gastos);
     }
 
@@ -61,14 +64,14 @@ public class GastoController {
     }
 
     @GetMapping("/valor")
-    public ResponseEntity<List<GastoDTO>> findByValorGreaterThan(@RequestParam float valor) {
+    public ResponseEntity<List<GastoDTO>> findByValorGreaterThan(@RequestParam Double valor) {
         List<GastoDTO> gastos = gastoService.findByValorGreaterThan(valor);
         return ResponseEntity.ok(gastos);
     }
 
     @GetMapping("/pessoa/{pessoaId}/categoria/{categoriaId}")
-    public ResponseEntity<List<GastoDTO>> findByPessoaIdAndCategoriaId(@PathVariable Long pessoaId, @PathVariable Long categoriaId) {
-        List<GastoDTO> gastos = gastoService.findByPessoaIdAndCategoriaId(pessoaId, categoriaId);
+    public ResponseEntity<List<GastoDTO>> findByPessoaIdAndCategoriaId(@PathVariable Pessoa pessoa, @PathVariable Categoria categoria) {
+        List<GastoDTO> gastos = gastoService.findByPessoaAndCategoria(pessoa, categoria);
         return ResponseEntity.ok(gastos);
     }
 

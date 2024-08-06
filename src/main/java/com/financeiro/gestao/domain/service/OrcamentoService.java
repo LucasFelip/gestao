@@ -4,12 +4,14 @@ import com.financeiro.gestao.api.dto.OrcamentoDTO;
 import com.financeiro.gestao.domain.exception.BusinessRuleException;
 import com.financeiro.gestao.domain.exception.ResourceNotFoundException;
 import com.financeiro.gestao.domain.model.Orcamento;
+import com.financeiro.gestao.domain.model.Pessoa;
 import com.financeiro.gestao.domain.repository.OrcamentoRepository;
 import com.financeiro.gestao.util.EntityToDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -41,15 +43,15 @@ public class OrcamentoService {
     }
 
     @Transactional(readOnly = true)
-    public List<OrcamentoDTO> findByPessoaId(Long pessoaId) {
-        List<Orcamento> orcamentos = orcamentoRepository.findByPessoaId(pessoaId);
+    public List<OrcamentoDTO> findByPessoa(Pessoa pessoa) {
+        List<Orcamento> orcamentos = orcamentoRepository.findByPessoa(pessoa);
         return orcamentos.stream()
                 .map(EntityToDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<OrcamentoDTO> findByDataInicioBetweenOrDataFimBetween(Date inicioStart, Date inicioEnd, Date fimStart, Date fimEnd) {
+    public List<OrcamentoDTO> findByDataInicioBetweenOrDataFimBetween(LocalDate inicioStart, LocalDate inicioEnd, LocalDate fimStart, LocalDate fimEnd) {
         List<Orcamento> orcamentos = orcamentoRepository.findByDataInicioBetweenOrDataFimBetween(inicioStart, inicioEnd, fimStart, fimEnd);
         return orcamentos.stream()
                 .map(EntityToDTOConverter::convertToDTO)
@@ -57,7 +59,7 @@ public class OrcamentoService {
     }
 
     @Transactional(readOnly = true)
-    public List<OrcamentoDTO> findByLimiteGreaterThan(float limite) {
+    public List<OrcamentoDTO> findByLimiteGreaterThan(Double limite) {
         List<Orcamento> orcamentos = orcamentoRepository.findByLimiteGreaterThan(limite);
         return orcamentos.stream()
                 .map(EntityToDTOConverter::convertToDTO)
@@ -94,23 +96,23 @@ public class OrcamentoService {
     }
 
     private void validarOrcamento(Orcamento orcamento) {
-        if (orcamento.getDataInicio().after(orcamento.getDataFim())) {
-            throw new BusinessRuleException("A data de início do orçamento não pode ser posterior à data de fim.");
-        }
+//        if (orcamento.getDataInicio().after(orcamento.getDataFim())) {
+//            throw new BusinessRuleException("A data de início do orçamento não pode ser posterior à data de fim.");
+//        }
 
         if (orcamento.getLimite() < 0) {
             throw new BusinessRuleException("O limite do orçamento não pode ser negativo.");
         }
 
         // Verificação de Sobreposição de Orçamento
-        List<Orcamento> orcamentosExistentes = orcamentoRepository.findByPessoaId(orcamento.getPessoa().getId());
-        for (Orcamento existente : orcamentosExistentes) {
-            if (orcamento.getId() == null || !orcamento.getId().equals(existente.getId())) { // Ignora o próprio orçamento em caso de atualização
-                if (periodosSobrepoe(orcamento.getDataInicio(), orcamento.getDataFim(), existente.getDataInicio(), existente.getDataFim())) {
-                    throw new BusinessRuleException("O orçamento sobrepõe um orçamento existente para a mesma pessoa.");
-                }
-            }
-        }
+//        List<Orcamento> orcamentosExistentes = orcamentoRepository.findByPessoa(orcamento.getPessoa());
+//        for (Orcamento existente : orcamentosExistentes) {
+//            if (orcamento.getId() == null || !orcamento.getId().equals(existente.getId())) { // Ignora o próprio orçamento em caso de atualização
+//                if (periodosSobrepoe(orcamento.getDataInicio(), orcamento.getDataFim(), existente.getDataInicio(), existente.getDataFim())) {
+//                    throw new BusinessRuleException("O orçamento sobrepõe um orçamento existente para a mesma pessoa.");
+//                }
+//            }
+//        }
 
         // Limite Mínimo de Orçamento
         float limiteMinimo = 1000.00f; // Valor
