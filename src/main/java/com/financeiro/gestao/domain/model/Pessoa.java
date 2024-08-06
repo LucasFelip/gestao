@@ -1,8 +1,8 @@
 package com.financeiro.gestao.domain.model;
 
-import java.util.List;
 import lombok.*;
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Data
@@ -21,6 +21,7 @@ public class Pessoa {
     private String senha;
     private String telefone;
     private String endereco;
+    private String roles;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "pessoa")
     private List<Gasto> gastos;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "pessoa")
