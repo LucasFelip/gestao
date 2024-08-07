@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -79,7 +80,7 @@ public class LucroService {
     }
 
     @Transactional(readOnly = true)
-    public List<LucroDTO> findByValorGreaterThan(Double valor) {
+    public List<LucroDTO> findByValorGreaterThan(BigDecimal valor) {
         List<Lucro> lucros = lucroRepository.findByValorGreaterThan(valor);
         return lucros.stream()
                 .map(EntityToDTOConverter::convertToDTO)
@@ -125,9 +126,9 @@ public class LucroService {
     }
 
     private void validarLucro(Lucro lucro) {
-        if (lucro.getValor() <= 0) {
-            throw new BusinessRuleException("O valor do lucro deve ser maior que zero.");
-        }
+//        if (lucro.getValor() <= 0) {
+//            throw new BusinessRuleException("O valor do lucro deve ser maior que zero.");
+//        }
 
         if (!categoriaRepository.existsById(lucro.getCategoria().getId())) {
             throw new BusinessRuleException("A categoria de lucro especificada não existe.");

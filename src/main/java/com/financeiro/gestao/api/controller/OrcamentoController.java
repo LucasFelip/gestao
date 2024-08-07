@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -55,7 +56,7 @@ public class OrcamentoController {
     }
 
     @GetMapping("/limite")
-    public ResponseEntity<List<OrcamentoDTO>> findByLimiteGreaterThan(@RequestParam Double limite) {
+    public ResponseEntity<List<OrcamentoDTO>> findByLimiteGreaterThan(@RequestParam BigDecimal limite) {
         List<OrcamentoDTO> orcamentos = orcamentoService.findByLimiteGreaterThan(limite);
         return ResponseEntity.ok(orcamentos);
     }

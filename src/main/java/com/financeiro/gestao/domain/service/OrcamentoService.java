@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -59,7 +60,7 @@ public class OrcamentoService {
     }
 
     @Transactional(readOnly = true)
-    public List<OrcamentoDTO> findByLimiteGreaterThan(Double limite) {
+    public List<OrcamentoDTO> findByLimiteGreaterThan(BigDecimal limite) {
         List<Orcamento> orcamentos = orcamentoRepository.findByLimiteGreaterThan(limite);
         return orcamentos.stream()
                 .map(EntityToDTOConverter::convertToDTO)
@@ -100,9 +101,9 @@ public class OrcamentoService {
 //            throw new BusinessRuleException("A data de início do orçamento não pode ser posterior à data de fim.");
 //        }
 
-        if (orcamento.getLimite() < 0) {
-            throw new BusinessRuleException("O limite do orçamento não pode ser negativo.");
-        }
+//        if (orcamento.getLimite() < 0) {
+//            throw new BusinessRuleException("O limite do orçamento não pode ser negativo.");
+//        }
 
         // Verificação de Sobreposição de Orçamento
 //        List<Orcamento> orcamentosExistentes = orcamentoRepository.findByPessoa(orcamento.getPessoa());
@@ -115,10 +116,10 @@ public class OrcamentoService {
 //        }
 
         // Limite Mínimo de Orçamento
-        float limiteMinimo = 1000.00f; // Valor
-        if (orcamento.getLimite() < limiteMinimo) {
-            throw new BusinessRuleException(String.format("O limite do orçamento deve ser no mínimo R$ %.2f.", limiteMinimo));
-        }
+//        float limiteMinimo = 1000.00f; // Valor
+//        if (orcamento.getLimite() < limiteMinimo) {
+//            throw new BusinessRuleException(String.format("O limite do orçamento deve ser no mínimo R$ %.2f.", limiteMinimo));
+//        }
     }
 
     private boolean periodosSobrepoe(Date inicio1, Date fim1, Date inicio2, Date fim2) {

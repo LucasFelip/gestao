@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -76,7 +77,7 @@ public class GastoService {
     }
 
     @Transactional(readOnly = true)
-    public List<GastoDTO> findByValorGreaterThan(Double valor) {
+    public List<GastoDTO> findByValorGreaterThan(BigDecimal valor) {
         List<Gasto> gastos = gastoRepository.findByValorGreaterThan(valor);
         return gastos.stream()
                 .map(EntityToDTOConverter::convertToDTO)
@@ -122,9 +123,9 @@ public class GastoService {
     }
 
     private void validarGasto(Gasto gasto) {
-        if (gasto.getValor() <= 0) {
-            throw new BusinessRuleException("O valor do gasto deve ser maior que zero.");
-        }
+//        if (gasto.getValor() <= 0) {
+//            throw new BusinessRuleException("O valor do gasto deve ser maior que zero.");
+//        }
 
         if (gasto.getDescricao() == null || gasto.getDescricao().trim().isEmpty()) {
             throw new BusinessRuleException("A descrição do gasto não pode estar vazia.");

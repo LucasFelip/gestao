@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -64,7 +65,7 @@ public class GastoController {
     }
 
     @GetMapping("/valor")
-    public ResponseEntity<List<GastoDTO>> findByValorGreaterThan(@RequestParam Double valor) {
+    public ResponseEntity<List<GastoDTO>> findByValorGreaterThan(@RequestParam BigDecimal valor) {
         List<GastoDTO> gastos = gastoService.findByValorGreaterThan(valor);
         return ResponseEntity.ok(gastos);
     }

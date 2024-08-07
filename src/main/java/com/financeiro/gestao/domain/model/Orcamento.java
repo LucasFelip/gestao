@@ -3,6 +3,7 @@ package com.financeiro.gestao.domain.model;
 import lombok.*;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -22,5 +23,5 @@ public class Orcamento {
     private Pessoa pessoa;
     private LocalDate dataInicio;
     private LocalDate dataFim;
-    private Double limite;
+    private BigDecimal limite;
 }

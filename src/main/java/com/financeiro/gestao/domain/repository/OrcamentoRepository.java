@@ -5,6 +5,7 @@ import com.financeiro.gestao.domain.model.Pessoa;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -13,5 +14,5 @@ import java.util.List;
 public interface OrcamentoRepository extends JpaRepository<Orcamento, Long> {
     List<Orcamento> findByPessoa(Pessoa pessoa);
     List<Orcamento> findByDataInicioBetweenOrDataFimBetween(LocalDate inicioStart, LocalDate inicioEnd, LocalDate fimStart, LocalDate fimEnd);
-    List<Orcamento> findByLimiteGreaterThan(Double limite);
+    List<Orcamento> findByLimiteGreaterThan(BigDecimal limite);
 }

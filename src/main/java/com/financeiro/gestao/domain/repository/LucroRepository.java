@@ -6,6 +6,7 @@ import com.financeiro.gestao.domain.model.Pessoa;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +17,6 @@ public interface LucroRepository extends JpaRepository<Lucro, Long> {
     List<Lucro> findByDataBetween(LocalDate inicio, LocalDate fim);
     List<Lucro> findByCategoria(Categoria categoria);
     List<Lucro> findByDescricaoContaining(String descricao);
-    List<Lucro> findByValorGreaterThan(Double valor);
+    List<Lucro> findByValorGreaterThan(BigDecimal valor);
     List<Lucro> findByPessoaIdAndCategoriaId(Long pessoaId, Long categoriaId);
 }

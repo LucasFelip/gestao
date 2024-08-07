@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -13,5 +15,5 @@ public class OrcamentoDTO {
     private Long id;
     private String dataInicio;
     private String dataFim;
-    private Double limite;
+    private BigDecimal limite;
 }

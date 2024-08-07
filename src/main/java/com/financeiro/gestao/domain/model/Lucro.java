@@ -3,6 +3,7 @@ package com.financeiro.gestao.domain.model;
 import lombok.*;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -24,6 +25,6 @@ public class Lucro {
     @OneToOne
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
-    private Double valor;
+    private BigDecimal valor;
     private LocalDate data;
 }

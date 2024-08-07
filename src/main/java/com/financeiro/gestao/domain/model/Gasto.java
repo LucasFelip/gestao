@@ -2,6 +2,8 @@ package com.financeiro.gestao.domain.model;
 
 import lombok.*;
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
@@ -22,6 +24,6 @@ public class Gasto {
     @OneToOne
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
-    private Double valor;
+    private BigDecimal valor;
     private Date data;
 }

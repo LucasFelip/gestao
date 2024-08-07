@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -13,7 +15,7 @@ public class GastoDTO {
     private Long id;
     private PessoaDTO pessoa;
     private String descricao;
-    private Double valor;
+    private BigDecimal valor;
     private String data;
     private CategoriaDTO categoria;
 }
