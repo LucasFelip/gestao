@@ -4,7 +4,7 @@ import lombok.*;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -25,5 +25,5 @@ public class Gasto {
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
     private BigDecimal valor;
-    private Date data;
+    private LocalDate data;
 }
