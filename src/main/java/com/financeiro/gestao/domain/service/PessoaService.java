@@ -112,7 +112,6 @@ public class PessoaService {
         pessoa.setEmail(pessoaAtualizada.getEmail());
         pessoa.setSenha(pessoaAtualizada.getSenha());
         pessoa.setTelefone(pessoaAtualizada.getTelefone());
-        pessoa.setEndereco(pessoaAtualizada.getEndereco());
         pessoa.setRoles(pessoaAtualizada.getRoles());
 
         validarPessoa(pessoa);

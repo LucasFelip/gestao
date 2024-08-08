@@ -41,7 +41,6 @@ public class EntityToDTOConverter {
                 .cpf(pessoa.getCpf())
                 .email(pessoa.getEmail())
                 .telefone(pessoa.getTelefone())
-                .endereco(pessoa.getEndereco())
                 .build();
     }
 

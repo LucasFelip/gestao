@@ -20,7 +20,6 @@ public class Pessoa {
     private String email;
     private String senha;
     private String telefone;
-    private String endereco;
     @Enumerated(EnumType.STRING)
     private Role roles = Role.USER;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "pessoa")
