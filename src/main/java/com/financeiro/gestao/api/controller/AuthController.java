@@ -4,13 +4,14 @@ import com.financeiro.gestao.domain.model.Pessoa;
 import com.financeiro.gestao.domain.repository.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
-@Controller
+@RestController
 @RequestMapping("/auth")
 public class AuthController {
 
@@ -21,24 +22,30 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
 
     @GetMapping("/login")
-    public String login() {
-        return "login";
+    public ModelAndView login() {
+        return new ModelAndView("login");
     }
 
     @GetMapping("/register")
-    public String register() {
-        return "register";
+    public ModelAndView register() {
+        return new ModelAndView("register");
+    }
+
+    @GetMapping("/logout")
+    public ModelAndView logout() {
+        return new ModelAndView("login");
     }
 
     @PostMapping("/register")
-    public String registerUser(Pessoa pessoa, Model model) {
+    public ModelAndView registerUser(Pessoa pessoa, Model model) {
         if (pessoaRepository.existsByEmail(pessoa.getEmail())) {
-            model.addAttribute("error", "Email já está em uso");
-            return "register";
+            ModelAndView modelAndView = new ModelAndView("register");
+            modelAndView.addObject("error", "Email já está em uso");
+            return modelAndView;
         }
 
         pessoa.setSenha(passwordEncoder.encode(pessoa.getSenha()));
         pessoaRepository.save(pessoa);
-        return "redirect:/auth/login";
+        return new ModelAndView("redirect:/auth/login");
     }
 }
