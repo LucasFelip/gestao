@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,74 +21,90 @@ import java.util.stream.Collectors;
 @Service
 public class GastoService {
 
-    private final GastoRepository gastoRepository;
-
     @Autowired
-    public GastoService(GastoRepository gastoRepository) {
-        this.gastoRepository = gastoRepository;
-    }
+    private GastoRepository gastoRepository;
 
     @Transactional(readOnly = true)
     public List<GastoDTO> findAll() {
-        List<Gasto> gastos = gastoRepository.findAll();
-        return gastos.stream()
+        return gastoRepository.findAll()
+                .stream()
                 .map(EntityToDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public Optional<GastoDTO> findById(Long id) {
-        Gasto gasto = gastoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Gasto não encontrado com o ID: " + id));
-        return Optional.of(EntityToDTOConverter.convertToDTO(gasto));
+        return gastoRepository.findById(id)
+                .map(EntityToDTOConverter::convertToDTO);
     }
 
     @Transactional(readOnly = true)
     public List<GastoDTO> findByPessoa(Pessoa pessoa) {
-        List<Gasto> gastos = gastoRepository.findByPessoa(pessoa);
-        return gastos.stream()
+        return gastoRepository.findByPessoa(pessoa)
+                .stream()
                 .map(EntityToDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<GastoDTO> findByDataBetween(LocalDate inicio, LocalDate fim) {
-        List<Gasto> gastos = gastoRepository.findByDataBetween(inicio, fim);
-        return gastos.stream()
+        return gastoRepository.findByDataBetween(inicio, fim)
+                .stream()
                 .map(EntityToDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<GastoDTO> findByCategoria(Categoria categoria) {
-        List<Gasto> gastos = gastoRepository.findByCategoria(categoria);
-        return gastos.stream()
+        return gastoRepository.findByCategoria(categoria)
+                .stream()
                 .map(EntityToDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<GastoDTO> findByDescricaoContaining(String descricao) {
-        List<Gasto> gastos = gastoRepository.findByDescricaoContaining(descricao);
-        return gastos.stream()
+        return gastoRepository.findByDescricaoContaining(descricao)
+                .stream()
                 .map(EntityToDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<GastoDTO> findByValorGreaterThan(BigDecimal valor) {
-        List<Gasto> gastos = gastoRepository.findByValorGreaterThan(valor);
-        return gastos.stream()
+        return gastoRepository.findByValorGreaterThan(valor)
+                .stream()
                 .map(EntityToDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<GastoDTO> findByPessoaAndCategoria(Pessoa pessoa, Categoria categoria) {
-        List<Gasto> gastos = gastoRepository.findByPessoaAndCategoria(pessoa, categoria);
-        return gastos.stream()
+        return gastoRepository.findByPessoaAndCategoria(pessoa, categoria)
+                .stream()
                 .map(EntityToDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<GastoDTO> findByDataAfter(LocalDate data) {
+        return gastoRepository.findByDataAfter(data)
+                .stream()
+                .map(EntityToDTOConverter::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<GastoDTO> findByDataBefore(LocalDate data) {
+        return gastoRepository.findByDataBefore(data)
+                .stream()
+                .map(EntityToDTOConverter::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public BigDecimal sumByPessoaAndDataBetween(Pessoa pessoa, LocalDate inicio, LocalDate fim) {
+        return gastoRepository.sumByPessoaAndDataBetween(pessoa, inicio, fim);
     }
 
     @Transactional
@@ -123,12 +138,11 @@ public class GastoService {
     }
 
     private void validarGasto(Gasto gasto) {
-//        if (gasto.getValor() <= 0) {
-//            throw new BusinessRuleException("O valor do gasto deve ser maior que zero.");
-//        }
-
         if (gasto.getDescricao() == null || gasto.getDescricao().trim().isEmpty()) {
             throw new BusinessRuleException("A descrição do gasto não pode estar vazia.");
+        }
+        if (gasto.getValor() == null || gasto.getValor().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new BusinessRuleException("O valor do gasto deve ser maior que zero.");
         }
     }
 }

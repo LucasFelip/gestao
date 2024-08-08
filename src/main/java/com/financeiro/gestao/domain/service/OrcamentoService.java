@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,39 +29,54 @@ public class OrcamentoService {
 
     @Transactional(readOnly = true)
     public List<OrcamentoDTO> findAll() {
-        List<Orcamento> orcamentos = orcamentoRepository.findAll();
-        return orcamentos.stream()
+        return orcamentoRepository.findAll()
+                .stream()
                 .map(EntityToDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public Optional<OrcamentoDTO> findById(Long id) {
-        Orcamento orcamento = orcamentoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Orçamento não encontrado com o ID: " + id));
-        return Optional.of(EntityToDTOConverter.convertToDTO(orcamento));
+        return orcamentoRepository.findById(id)
+                .map(EntityToDTOConverter::convertToDTO);
     }
 
     @Transactional(readOnly = true)
     public List<OrcamentoDTO> findByPessoa(Pessoa pessoa) {
-        List<Orcamento> orcamentos = orcamentoRepository.findByPessoa(pessoa);
-        return orcamentos.stream()
+        return orcamentoRepository.findByPessoa(pessoa)
+                .stream()
                 .map(EntityToDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<OrcamentoDTO> findByDataInicioBetweenOrDataFimBetween(LocalDate inicioStart, LocalDate inicioEnd, LocalDate fimStart, LocalDate fimEnd) {
-        List<Orcamento> orcamentos = orcamentoRepository.findByDataInicioBetweenOrDataFimBetween(inicioStart, inicioEnd, fimStart, fimEnd);
-        return orcamentos.stream()
+        return orcamentoRepository.findByDataInicioBetweenOrDataFimBetween(inicioStart, inicioEnd, fimStart, fimEnd)
+                .stream()
                 .map(EntityToDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<OrcamentoDTO> findByLimiteGreaterThan(BigDecimal limite) {
-        List<Orcamento> orcamentos = orcamentoRepository.findByLimiteGreaterThan(limite);
-        return orcamentos.stream()
+        return orcamentoRepository.findByLimiteGreaterThan(limite)
+                .stream()
+                .map(EntityToDTOConverter::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrcamentoDTO> findByPessoaAndDataFimAfter(Pessoa pessoa, LocalDate hoje) {
+        return orcamentoRepository.findByPessoaAndDataFimAfter(pessoa, hoje)
+                .stream()
+                .map(EntityToDTOConverter::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrcamentoDTO> findByPessoaAndDataInicioBeforeAndDataFimAfter(Pessoa pessoa, LocalDate inicio, LocalDate fim) {
+        return orcamentoRepository.findByPessoaAndDataInicioBeforeAndDataFimAfter(pessoa, inicio, fim)
+                .stream()
                 .map(EntityToDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
@@ -76,12 +90,12 @@ public class OrcamentoService {
     @Transactional
     public Orcamento update(Long id, Orcamento orcamentoAtualizado) {
         Orcamento orcamento = orcamentoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Orçamento não encontrado com o ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Orcamento não encontrado com o ID: " + id));
 
-        orcamento.setPessoa(orcamentoAtualizado.getPessoa());
         orcamento.setDataInicio(orcamentoAtualizado.getDataInicio());
         orcamento.setDataFim(orcamentoAtualizado.getDataFim());
         orcamento.setLimite(orcamentoAtualizado.getLimite());
+        orcamento.setPessoa(orcamentoAtualizado.getPessoa());
 
         validarOrcamento(orcamento);
 
@@ -91,38 +105,20 @@ public class OrcamentoService {
     @Transactional
     public void delete(Long id) {
         if (!orcamentoRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Orçamento não encontrado com o ID: " + id);
+            throw new ResourceNotFoundException("Orcamento não encontrado com o ID: " + id);
         }
         orcamentoRepository.deleteById(id);
     }
 
     private void validarOrcamento(Orcamento orcamento) {
-//        if (orcamento.getDataInicio().after(orcamento.getDataFim())) {
-//            throw new BusinessRuleException("A data de início do orçamento não pode ser posterior à data de fim.");
-//        }
-
-//        if (orcamento.getLimite() < 0) {
-//            throw new BusinessRuleException("O limite do orçamento não pode ser negativo.");
-//        }
-
-        // Verificação de Sobreposição de Orçamento
-//        List<Orcamento> orcamentosExistentes = orcamentoRepository.findByPessoa(orcamento.getPessoa());
-//        for (Orcamento existente : orcamentosExistentes) {
-//            if (orcamento.getId() == null || !orcamento.getId().equals(existente.getId())) { // Ignora o próprio orçamento em caso de atualização
-//                if (periodosSobrepoe(orcamento.getDataInicio(), orcamento.getDataFim(), existente.getDataInicio(), existente.getDataFim())) {
-//                    throw new BusinessRuleException("O orçamento sobrepõe um orçamento existente para a mesma pessoa.");
-//                }
-//            }
-//        }
-
-        // Limite Mínimo de Orçamento
-//        float limiteMinimo = 1000.00f; // Valor
-//        if (orcamento.getLimite() < limiteMinimo) {
-//            throw new BusinessRuleException(String.format("O limite do orçamento deve ser no mínimo R$ %.2f.", limiteMinimo));
-//        }
-    }
-
-    private boolean periodosSobrepoe(Date inicio1, Date fim1, Date inicio2, Date fim2) {
-        return !inicio1.after(fim2) && !fim1.before(inicio2);
+        if (orcamento.getDataInicio() == null) {
+            throw new BusinessRuleException("A data de início do orçamento não pode estar vazia.");
+        }
+        if (orcamento.getDataFim() == null) {
+            throw new BusinessRuleException("A data de fim do orçamento não pode estar vazia.");
+        }
+        if (orcamento.getLimite() == null || orcamento.getLimite().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new BusinessRuleException("O limite do orçamento deve ser maior que zero.");
+        }
     }
 }

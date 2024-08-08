@@ -4,10 +4,9 @@ import com.financeiro.gestao.api.dto.LucroDTO;
 import com.financeiro.gestao.domain.exception.BusinessRuleException;
 import com.financeiro.gestao.domain.exception.ResourceNotFoundException;
 import com.financeiro.gestao.domain.model.Categoria;
-import com.financeiro.gestao.domain.model.Pessoa;
-import com.financeiro.gestao.domain.repository.CategoriaRepository;
-import com.financeiro.gestao.domain.repository.LucroRepository;
 import com.financeiro.gestao.domain.model.Lucro;
+import com.financeiro.gestao.domain.model.Pessoa;
+import com.financeiro.gestao.domain.repository.LucroRepository;
 import com.financeiro.gestao.util.EntityToDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,76 +21,90 @@ import java.util.stream.Collectors;
 @Service
 public class LucroService {
 
-    private final LucroRepository lucroRepository;
-    private final CategoriaRepository categoriaRepository;
-
     @Autowired
-    public LucroService(LucroRepository lucroRepository, CategoriaRepository categoriaRepository) {
-        this.lucroRepository = lucroRepository;
-        this.categoriaRepository = categoriaRepository;
-    }
+    private LucroRepository lucroRepository;
 
     @Transactional(readOnly = true)
     public List<LucroDTO> findAll() {
-        List<Lucro> lucros = lucroRepository.findAll();
-        return lucros.stream()
+        return lucroRepository.findAll()
+                .stream()
                 .map(EntityToDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public Optional<LucroDTO> findById(Long id) {
-        Lucro lucro = lucroRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Lucro não encontrado com o ID: " + id));
-        return Optional.of(EntityToDTOConverter.convertToDTO(lucro));
+        return lucroRepository.findById(id)
+                .map(EntityToDTOConverter::convertToDTO);
     }
 
     @Transactional(readOnly = true)
     public List<LucroDTO> findByPessoa(Pessoa pessoa) {
-        List<Lucro> lucros = lucroRepository.findByPessoa(pessoa);
-        return lucros.stream()
+        return lucroRepository.findByPessoa(pessoa)
+                .stream()
                 .map(EntityToDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<LucroDTO> findByDataBetween(LocalDate inicio, LocalDate fim) {
-        List<Lucro> lucros = lucroRepository.findByDataBetween(inicio, fim);
-        return lucros.stream()
+        return lucroRepository.findByDataBetween(inicio, fim)
+                .stream()
                 .map(EntityToDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<LucroDTO> findByCategoria(Categoria categoria) {
-        List<Lucro> lucros = lucroRepository.findByCategoria(categoria);
-        return lucros.stream()
+        return lucroRepository.findByCategoria(categoria)
+                .stream()
                 .map(EntityToDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<LucroDTO> findByDescricaoContaining(String descricao) {
-        List<Lucro> lucros = lucroRepository.findByDescricaoContaining(descricao);
-        return lucros.stream()
+        return lucroRepository.findByDescricaoContaining(descricao)
+                .stream()
                 .map(EntityToDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<LucroDTO> findByValorGreaterThan(BigDecimal valor) {
-        List<Lucro> lucros = lucroRepository.findByValorGreaterThan(valor);
-        return lucros.stream()
+        return lucroRepository.findByValorGreaterThan(valor)
+                .stream()
                 .map(EntityToDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<LucroDTO> findByPessoaIdAndCategoriaId(Long pessoaId, Long categoriaId) {
-        List<Lucro> lucros = lucroRepository.findByPessoaIdAndCategoriaId(pessoaId, categoriaId);
-        return lucros.stream()
+        return lucroRepository.findByPessoaIdAndCategoriaId(pessoaId, categoriaId)
+                .stream()
                 .map(EntityToDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<LucroDTO> findByDataAfter(LocalDate data) {
+        return lucroRepository.findByDataAfter(data)
+                .stream()
+                .map(EntityToDTOConverter::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<LucroDTO> findByDataBefore(LocalDate data) {
+        return lucroRepository.findByDataBefore(data)
+                .stream()
+                .map(EntityToDTOConverter::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public BigDecimal sumByPessoaAndDataBetween(Pessoa pessoa, LocalDate inicio, LocalDate fim) {
+        return lucroRepository.sumByPessoaAndDataBetween(pessoa, inicio, fim);
     }
 
     @Transactional
@@ -126,20 +138,11 @@ public class LucroService {
     }
 
     private void validarLucro(Lucro lucro) {
-//        if (lucro.getValor() <= 0) {
-//            throw new BusinessRuleException("O valor do lucro deve ser maior que zero.");
-//        }
-
-        if (!categoriaRepository.existsById(lucro.getCategoria().getId())) {
-            throw new BusinessRuleException("A categoria de lucro especificada não existe.");
-        }
-
-//        if (lucro.getData().after(new Date())) {
-//            throw new BusinessRuleException("A data do lucro não pode ser uma data futura.");
-//        }
-
         if (lucro.getDescricao() == null || lucro.getDescricao().trim().isEmpty()) {
             throw new BusinessRuleException("A descrição do lucro não pode estar vazia.");
+        }
+        if (lucro.getValor() == null || lucro.getValor().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new BusinessRuleException("O valor do lucro deve ser maior que zero.");
         }
     }
 }

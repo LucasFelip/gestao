@@ -34,38 +34,34 @@ public class PessoaService {
 
     @Transactional(readOnly = true)
     public Optional<PessoaDTO> findById(Long id) {
-        Pessoa pessoa = pessoaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Pessoa não encontrada com o ID: " + id));
-        return Optional.of(EntityToDTOConverter.convertToDTO(pessoa));
+        return pessoaRepository.findById(id)
+                .map(EntityToDTOConverter::convertToDTO);
     }
 
     @Transactional(readOnly = true)
     public Optional<PessoaDTO> findByCpf(String cpf) {
-        Pessoa pessoa = pessoaRepository.findByCpf(cpf)
-                .orElseThrow(() -> new ResourceNotFoundException("Pessoa não encontrada com o CPF: " + cpf));
-        return Optional.of(EntityToDTOConverter.convertToDTO(pessoa));
+        return pessoaRepository.findByCpf(cpf)
+                .map(EntityToDTOConverter::convertToDTO);
     }
 
     @Transactional(readOnly = true)
     public Optional<PessoaDTO> findByEmail(String email) {
-        Pessoa pessoa = pessoaRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Pessoa não encontrada com o email: " + email));
-        return Optional.of(EntityToDTOConverter.convertToDTO(pessoa));
+        return pessoaRepository.findByEmail(email)
+                .map(EntityToDTOConverter::convertToDTO);
     }
 
     @Transactional(readOnly = true)
     public List<PessoaDTO> findByNomeContaining(String nome) {
-        List<Pessoa> pessoas = pessoaRepository.findByNomeContaining(nome);
-        return pessoas.stream()
+        return pessoaRepository.findByNomeContaining(nome)
+                .stream()
                 .map(EntityToDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public Optional<PessoaDTO> findByNomeAndEmail(String nome, String email) {
-        Pessoa pessoa = pessoaRepository.findByNomeAndEmail(nome, email)
-                .orElseThrow(() -> new ResourceNotFoundException("Pessoa não encontrada com o nome e email fornecidos."));
-        return Optional.of(EntityToDTOConverter.convertToDTO(pessoa));
+        return pessoaRepository.findByNomeAndEmail(nome, email)
+                .map(EntityToDTOConverter::convertToDTO);
     }
 
     @Transactional(readOnly = true)
@@ -80,9 +76,24 @@ public class PessoaService {
 
     @Transactional(readOnly = true)
     public Optional<PessoaDTO> findByEmailAndSenha(String email, String senha) {
-        Pessoa pessoa = pessoaRepository.findByEmailAndSenha(email, senha)
-                .orElseThrow(() -> new ResourceNotFoundException("Pessoa não encontrada com o email e senha fornecidos."));
-        return Optional.of(EntityToDTOConverter.convertToDTO(pessoa));
+        return pessoaRepository.findByEmailAndSenha(email, senha)
+                .map(EntityToDTOConverter::convertToDTO);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PessoaDTO> findByNomeStartingWith(String prefixo) {
+        return pessoaRepository.findByNomeStartingWith(prefixo)
+                .stream()
+                .map(EntityToDTOConverter::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<PessoaDTO> findByTelefoneContaining(String numero) {
+        return pessoaRepository.findByTelefoneContaining(numero)
+                .stream()
+                .map(EntityToDTOConverter::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -102,6 +113,7 @@ public class PessoaService {
         pessoa.setSenha(pessoaAtualizada.getSenha());
         pessoa.setTelefone(pessoaAtualizada.getTelefone());
         pessoa.setEndereco(pessoaAtualizada.getEndereco());
+        pessoa.setRoles(pessoaAtualizada.getRoles());
 
         validarPessoa(pessoa);
 
@@ -120,17 +132,17 @@ public class PessoaService {
         if (pessoa.getCpf() == null || pessoa.getCpf().trim().isEmpty()) {
             throw new BusinessRuleException("O CPF da pessoa não pode estar vazio.");
         }
-
-        if (pessoaRepository.existsByCpf(pessoa.getCpf())) {
-            throw new BusinessRuleException("Já existe uma pessoa cadastrada com este CPF.");
-        }
-
         if (pessoa.getEmail() == null || pessoa.getEmail().trim().isEmpty()) {
             throw new BusinessRuleException("O email da pessoa não pode estar vazio.");
         }
-
+        if (pessoa.getNome() == null || pessoa.getNome().trim().isEmpty()) {
+            throw new BusinessRuleException("O nome da pessoa não pode estar vazio.");
+        }
+        if (pessoaRepository.existsByCpf(pessoa.getCpf())) {
+            throw new BusinessRuleException("Já existe uma pessoa com este CPF.");
+        }
         if (pessoaRepository.existsByEmail(pessoa.getEmail())) {
-            throw new BusinessRuleException("Já existe uma pessoa cadastrada com este email.");
+            throw new BusinessRuleException("Já existe uma pessoa com este email.");
         }
     }
 }
