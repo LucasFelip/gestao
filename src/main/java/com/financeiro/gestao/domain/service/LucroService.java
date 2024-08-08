@@ -103,8 +103,8 @@ public class LucroService {
     }
 
     @Transactional(readOnly = true)
-    public BigDecimal sumByPessoaAndDataBetween(Pessoa pessoa, LocalDate inicio, LocalDate fim) {
-        return lucroRepository.sumByPessoaAndDataBetween(pessoa, inicio, fim);
+    public BigDecimal findSumValorByPessoaAndDataBetween(Pessoa pessoa, LocalDate inicio, LocalDate fim) {
+        return lucroRepository.findSumValorByPessoaAndDataBetween(pessoa, inicio, fim);
     }
 
     @Transactional

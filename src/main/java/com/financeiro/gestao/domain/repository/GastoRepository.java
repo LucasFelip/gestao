@@ -21,6 +21,6 @@ public interface GastoRepository extends JpaRepository<Gasto, Long> {
     List<Gasto> findByPessoaAndCategoria(Pessoa pessoa, Categoria categoria);
     List<Gasto> findByDataAfter(LocalDate data);
     List<Gasto> findByDataBefore(LocalDate data);
-    BigDecimal sumByPessoaAndDataBetween(Pessoa pessoa, LocalDate inicio, LocalDate fim);
-
+    BigDecimal findSumValorByPessoaAndDataBetween(Pessoa pessoa, LocalDate inicio, LocalDate fim);
 }
+

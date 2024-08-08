@@ -103,8 +103,8 @@ public class GastoService {
     }
 
     @Transactional(readOnly = true)
-    public BigDecimal sumByPessoaAndDataBetween(Pessoa pessoa, LocalDate inicio, LocalDate fim) {
-        return gastoRepository.sumByPessoaAndDataBetween(pessoa, inicio, fim);
+    public BigDecimal findSumValorByPessoaAndDataBetween(Pessoa pessoa, LocalDate inicio, LocalDate fim) {
+        return gastoRepository.findSumValorByPessoaAndDataBetween(pessoa, inicio, fim);
     }
 
     @Transactional

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -21,6 +20,6 @@ public interface LucroRepository extends JpaRepository<Lucro, Long> {
     List<Lucro> findByPessoaIdAndCategoriaId(Long pessoaId, Long categoriaId);
     List<Lucro> findByDataAfter(LocalDate data);
     List<Lucro> findByDataBefore(LocalDate data);
-    BigDecimal sumByPessoaAndDataBetween(Pessoa pessoa, LocalDate inicio, LocalDate fim);
+    BigDecimal findSumValorByPessoaAndDataBetween(Pessoa pessoa, LocalDate inicio, LocalDate fim);
 
 }
