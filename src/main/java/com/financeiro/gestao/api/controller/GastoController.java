@@ -13,11 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/gastos")
+@RequestMapping("/gastos")
 public class GastoController {
 
     private final GastoService gastoService;
@@ -74,6 +73,24 @@ public class GastoController {
     public ResponseEntity<List<GastoDTO>> findByPessoaIdAndCategoriaId(@PathVariable Pessoa pessoa, @PathVariable Categoria categoria) {
         List<GastoDTO> gastos = gastoService.findByPessoaAndCategoria(pessoa, categoria);
         return ResponseEntity.ok(gastos);
+    }
+
+    @GetMapping("/data/after")
+    public ResponseEntity<List<GastoDTO>> findByDataAfter(@RequestParam LocalDate data) {
+        List<GastoDTO> gastos = gastoService.findByDataAfter(data);
+        return ResponseEntity.ok(gastos);
+    }
+
+    @GetMapping("/data/before")
+    public ResponseEntity<List<GastoDTO>> findByDataBefore(@RequestParam LocalDate data) {
+        List<GastoDTO> gastos = gastoService.findByDataBefore(data);
+        return ResponseEntity.ok(gastos);
+    }
+
+    @GetMapping("/sum")
+    public ResponseEntity<BigDecimal> sumByPessoaAndDataBetween(@RequestParam Pessoa pessoa, @RequestParam LocalDate inicio, @RequestParam LocalDate fim) {
+        BigDecimal total = gastoService.sumByPessoaAndDataBetween(pessoa, inicio, fim);
+        return ResponseEntity.ok(total);
     }
 
     @PostMapping

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/pessoas")
+@RequestMapping("/pessoas")
 public class PessoaController {
 
     private final PessoaService pessoaService;
@@ -77,6 +77,18 @@ public class PessoaController {
         return pessoaService.findByEmailAndSenha(email, senha)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/nome-start")
+    public ResponseEntity<List<PessoaDTO>> findByNomeStartingWith(@RequestParam String prefixo) {
+        List<PessoaDTO> pessoas = pessoaService.findByNomeStartingWith(prefixo);
+        return ResponseEntity.ok(pessoas);
+    }
+
+    @GetMapping("/telefone")
+    public ResponseEntity<List<PessoaDTO>> findByTelefoneContaining(@RequestParam String numero) {
+        List<PessoaDTO> pessoas = pessoaService.findByTelefoneContaining(numero);
+        return ResponseEntity.ok(pessoas);
     }
 
     @PostMapping

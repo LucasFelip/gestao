@@ -12,11 +12,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/orcamentos")
+@RequestMapping("/orcamentos")
 public class OrcamentoController {
 
     private final OrcamentoService orcamentoService;
@@ -58,6 +57,18 @@ public class OrcamentoController {
     @GetMapping("/limite")
     public ResponseEntity<List<OrcamentoDTO>> findByLimiteGreaterThan(@RequestParam BigDecimal limite) {
         List<OrcamentoDTO> orcamentos = orcamentoService.findByLimiteGreaterThan(limite);
+        return ResponseEntity.ok(orcamentos);
+    }
+
+    @GetMapping("/pessoa/{pessoaId}/data-fim")
+    public ResponseEntity<List<OrcamentoDTO>> findByPessoaAndDataFimAfter(@PathVariable Pessoa pessoa, @RequestParam LocalDate hoje) {
+        List<OrcamentoDTO> orcamentos = orcamentoService.findByPessoaAndDataFimAfter(pessoa, hoje);
+        return ResponseEntity.ok(orcamentos);
+    }
+
+    @GetMapping("/pessoa/{pessoaId}/data-inicio-fim")
+    public ResponseEntity<List<OrcamentoDTO>> findByPessoaAndDataInicioBeforeAndDataFimAfter(@PathVariable Pessoa pessoa, @RequestParam LocalDate inicio, @RequestParam LocalDate fim) {
+        List<OrcamentoDTO> orcamentos = orcamentoService.findByPessoaAndDataInicioBeforeAndDataFimAfter(pessoa, inicio, fim);
         return ResponseEntity.ok(orcamentos);
     }
 
