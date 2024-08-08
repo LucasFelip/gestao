@@ -19,4 +19,8 @@ public interface LucroRepository extends JpaRepository<Lucro, Long> {
     List<Lucro> findByDescricaoContaining(String descricao);
     List<Lucro> findByValorGreaterThan(BigDecimal valor);
     List<Lucro> findByPessoaIdAndCategoriaId(Long pessoaId, Long categoriaId);
+    List<Lucro> findByDataAfter(LocalDate data);
+    List<Lucro> findByDataBefore(LocalDate data);
+    BigDecimal sumByPessoaAndDataBetween(Pessoa pessoa, LocalDate inicio, LocalDate fim);
+
 }
