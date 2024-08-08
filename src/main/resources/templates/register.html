@@ -5,7 +5,6 @@
     <title>Registro</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 </head>
 <body>
 <div class="container">
@@ -16,7 +15,7 @@
                     <h3>Registrar</h3>
                 </div>
                 <div class="card-body">
-                    <form th:action="@{/auth/register}" method="post">
+                    <form id="registerForm" th:action="@{/auth/register}" method="post">
                         <div class="form-group">
                             <label for="nome">Nome</label>
                             <input type="text" class="form-control" id="nome" name="nome" required>
@@ -37,7 +36,7 @@
                             <label for="cpf">CPF</label>
                             <input type="text" class="form-control" id="cpf" name="cpf" required>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-block">Registrar</button>
+                        <button type="submit" class="btn btn-primary btn-block mt-5">Registrar</button>
                     </form>
                 </div>
                 <div class="card-footer text-center">
@@ -49,14 +48,20 @@
         </div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 <script>
     $(document).ready(function(){
         $('#telefone').mask('(00) 00000-0000');
         $('#cpf').mask('000.000.000-00');
+
+        $('#registerForm').on('submit', function(){
+            $('#telefone').unmask();
+            $('#cpf').unmask();
+        });
     });
 </script>
-<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.j"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
