@@ -10,20 +10,20 @@
 <header class="sticky-top">
     <nav class="navbar navbar-expand-md navbar-dark bg-dark border-bottom border-bottom-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Sistema Financeiro</a>
+            <a class="navbar-brand" th:href="@{/home}">Sistema Financeiro</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav ms-auto">
-                    <a class="nav-link" href="#principal">Principal</a>
-                    <a class="nav-link" href="#lucro">Lucro</a>
-                    <a class="nav-link" href="#orcamento">Orçamento</a>
-                    <a class="nav-link" href="#pessoa">Pessoa</a>
-                    <a class="nav-link" href="#relatorio">Relatório</a>
-                    <a class="nav-link" href="#gasto">Gasto</a>
-                    <a class="nav-link" href="#categoria">Categoria</a>
-                    <a class="nav-link btn btn-danger text-white" href="@{/auth/logout}">Logout</a>
+                    <a class="nav-link" th:href="@{/home#principal}">Principal</a>
+                    <a class="nav-link" th:href="@{/home#lucro}">Lucro</a>
+                    <a class="nav-link" th:href="@{/home#orcamento}">Orçamento</a>
+                    <a class="nav-link" th:href="@{/home#pessoa}">Pessoa</a>
+                    <a class="nav-link" th:href="@{/home#relatorio}">Relatório</a>
+                    <a class="nav-link" th:href="@{/home#gasto}">Gasto</a>
+                    <a class="nav-link" th:href="@{/home#categoria}">Categoria</a>
+                    <a class="nav-link btn btn-danger text-white" th:href="@{/auth/logout}">Logout</a>
                 </div>
             </div>
         </div>
@@ -31,7 +31,7 @@
 </header>
 <main>
     <div class="container mt-5">
-        <h1>Bem-vindo à Tela Principal</h1>
+        <h1>Bem-vindo à Tela Principal, <span th:text="${nome}">Usuário</span>!</h1>
         <p>Você está autenticado!</p>
 
         <section class="border-top row" id="principal">
@@ -43,7 +43,6 @@
                     </div>
                     <div class="card-body">
                         <p>Aqui você pode gerenciar os lucros.</p>
-                        <!-- Placeholder para Lucro -->
                         <a href="#" class="btn btn-primary">Ver Lucros</a>
                     </div>
                 </div>
@@ -56,7 +55,6 @@
                     </div>
                     <div class="card-body">
                         <p>Aqui você pode gerenciar os orçamentos.</p>
-                        <!-- Placeholder para Orçamento -->
                         <a href="#" class="btn btn-primary">Ver Orçamentos</a>
                     </div>
                 </div>
@@ -69,7 +67,6 @@
                     </div>
                     <div class="card-body">
                         <p>Aqui você pode gerenciar as pessoas.</p>
-                        <!-- Placeholder para Pessoa -->
                         <a href="#" class="btn btn-primary">Ver Pessoas</a>
                     </div>
                 </div>
@@ -82,7 +79,6 @@
                     </div>
                     <div class="card-body">
                         <p>Aqui você pode gerenciar os relatórios.</p>
-                        <!-- Placeholder para Relatório -->
                         <a href="#" class="btn btn-primary">Ver Relatórios</a>
                     </div>
                 </div>

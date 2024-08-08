@@ -7,6 +7,8 @@ import com.financeiro.gestao.domain.model.Pessoa;
 import com.financeiro.gestao.domain.repository.PessoaRepository;
 import com.financeiro.gestao.util.EntityToDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,6 +50,15 @@ public class PessoaService {
     public Optional<PessoaDTO> findByEmail(String email) {
         return pessoaRepository.findByEmail(email)
                 .map(EntityToDTOConverter::convertToDTO);
+    }
+
+    @Transactional(readOnly = true)
+    public String getNomeUsuarioLogado() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        Pessoa pessoa = pessoaRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com o email: " + email));
+        return pessoa.getNome();
     }
 
     @Transactional(readOnly = true)
