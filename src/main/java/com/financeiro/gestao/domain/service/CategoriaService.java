@@ -4,12 +4,14 @@ import com.financeiro.gestao.api.dto.CategoriaDTO;
 import com.financeiro.gestao.domain.exception.BusinessRuleException;
 import com.financeiro.gestao.domain.exception.ResourceNotFoundException;
 import com.financeiro.gestao.domain.model.Categoria;
+import com.financeiro.gestao.domain.model.enums.TipoCategoria;
 import com.financeiro.gestao.domain.repository.CategoriaRepository;
 import com.financeiro.gestao.util.EntityToDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -75,6 +77,21 @@ public class CategoriaService {
         validarCategoria(categoria);
 
         return categoriaRepository.save(categoria);
+    }
+
+    @Transactional(readOnly = true)
+    public List<CategoriaDTO> findCategoriasByTipoCategoria(String tipo) {
+        TipoCategoria tipoCategoria;
+        try {
+            tipoCategoria = TipoCategoria.valueOf(tipo.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return Collections.emptyList();
+        }
+
+        List<Categoria> categorias = categoriaRepository.findCategoriasByTipoCategoria(tipoCategoria);
+        return categorias.stream()
+                .map(EntityToDTOConverter::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @Transactional

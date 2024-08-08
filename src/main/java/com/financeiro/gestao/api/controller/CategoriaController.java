@@ -48,6 +48,18 @@ public class CategoriaController {
         return ResponseEntity.ok(categorias);
     }
 
+    @GetMapping("/nome/exists")
+    public ResponseEntity<Boolean> existsByNome(@RequestParam String nome) {
+        Boolean exists = categoriaService.existsByNome(nome);
+        return ResponseEntity.ok(exists);
+    }
+
+    @GetMapping("/tipo")
+    public ResponseEntity<List<CategoriaDTO>> findCategoriasByTipoCategoria(@RequestParam String tipo) {
+        List<CategoriaDTO> categorias = categoriaService.findCategoriasByTipoCategoria(tipo);
+        return ResponseEntity.ok(categorias);
+    }
+
     @PostMapping
     public ResponseEntity<CategoriaDTO> save(@RequestBody Categoria categoria) {
         Categoria savedCategoria = categoriaService.save(categoria);

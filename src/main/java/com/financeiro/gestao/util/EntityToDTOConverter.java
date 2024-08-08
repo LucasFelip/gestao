@@ -31,6 +31,7 @@ public class EntityToDTOConverter {
         return CategoriaDTO.builder()
                 .id(categoria.getId())
                 .nome(categoria.getNome())
+                .tipoCategoria(categoria.getTipoCategoria().name())
                 .build();
     }
 
@@ -41,6 +42,7 @@ public class EntityToDTOConverter {
                 .cpf(pessoa.getCpf())
                 .email(pessoa.getEmail())
                 .telefone(pessoa.getTelefone())
+                .role(pessoa.getRoles().name())
                 .build();
     }
 

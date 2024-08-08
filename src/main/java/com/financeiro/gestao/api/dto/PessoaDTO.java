@@ -1,5 +1,6 @@
 package com.financeiro.gestao.api.dto;
 
+import com.financeiro.gestao.domain.model.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,5 +16,5 @@ public class PessoaDTO {
     private String cpf;
     private String email;
     private String telefone;
-    private String endereco;
+    private String role;
 }

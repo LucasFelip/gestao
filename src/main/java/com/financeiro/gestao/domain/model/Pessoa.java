@@ -1,5 +1,6 @@
 package com.financeiro.gestao.domain.model;
 
+import com.financeiro.gestao.domain.model.enums.Role;
 import lombok.*;
 import jakarta.persistence.*;
 import java.util.List;

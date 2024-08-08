@@ -1,5 +1,6 @@
 package com.financeiro.gestao.domain.model;
 
+import com.financeiro.gestao.domain.model.enums.TipoCategoria;
 import lombok.*;
 import jakarta.persistence.*;
 
@@ -15,4 +16,6 @@ public class Categoria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
+    @Enumerated(EnumType.STRING)
+    private TipoCategoria tipoCategoria;
 }
