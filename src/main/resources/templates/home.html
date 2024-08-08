@@ -1,14 +1,122 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title>Home</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
-<div class="container">
-    <h1 class="mt-5">Bem-vindo à Tela Principal</h1>
-    <p>Você está autenticado!</p>
-    <a th:href="@{/auth/logout}"class="btn btn-danger">Logout</a>
-</div>
+<header class="sticky-top">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark border-bottom border-bottom-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Sistema Financeiro</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav ms-auto">
+                    <a class="nav-link" href="#principal">Principal</a>
+                    <a class="nav-link" href="#lucro">Lucro</a>
+                    <a class="nav-link" href="#orcamento">Orçamento</a>
+                    <a class="nav-link" href="#pessoa">Pessoa</a>
+                    <a class="nav-link" href="#relatorio">Relatório</a>
+                    <a class="nav-link" href="#gasto">Gasto</a>
+                    <a class="nav-link" href="#categoria">Categoria</a>
+                    <a class="nav-link btn btn-danger text-white" href="@{/auth/logout}">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<main>
+    <div class="container mt-5">
+        <h1>Bem-vindo à Tela Principal</h1>
+        <p>Você está autenticado!</p>
+
+        <section class="border-top row" id="principal">
+
+            <div class="mt-4 col-md-6" id="lucro">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Lucro</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Aqui você pode gerenciar os lucros.</p>
+                        <!-- Placeholder para Lucro -->
+                        <a href="#" class="btn btn-primary">Ver Lucros</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 col-md-6" id="orcamento">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Orçamento</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Aqui você pode gerenciar os orçamentos.</p>
+                        <!-- Placeholder para Orçamento -->
+                        <a href="#" class="btn btn-primary">Ver Orçamentos</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 col-md-6" id="pessoa">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Pessoa</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Aqui você pode gerenciar as pessoas.</p>
+                        <!-- Placeholder para Pessoa -->
+                        <a href="#" class="btn btn-primary">Ver Pessoas</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 col-md-6" id="relatorio">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Relatório</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Aqui você pode gerenciar os relatórios.</p>
+                        <!-- Placeholder para Relatório -->
+                        <a href="#" class="btn btn-primary">Ver Relatórios</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 col-md-6" id="gasto">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Gasto</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Aqui você pode gerenciar os gastos.</p>
+                        <!-- Placeholder para Gasto -->
+                        <a href="#" class="btn btn-primary">Ver Gastos</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 col-md-6" id="categoria">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Categoria</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Aqui você pode gerenciar as categorias.</p>
+                        <!-- Placeholder para Categoria -->
+                        <a href="#" class="btn btn-primary">Ver Categorias</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
