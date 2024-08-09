@@ -18,10 +18,9 @@
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav ms-auto">
                     <a class="nav-link" th:href="@{/home#principal}">Principal</a>
-                    <a class="nav-link" th:href="@{/home#lucro}">Lucro</a>
                     <a class="nav-link" th:href="@{/home#orcamento}">Orçamento</a>
-                    <a class="nav-link" th:href="@{/home#pessoa}">Pessoa</a>
                     <a class="nav-link" th:href="@{/home#relatorio}">Relatório</a>
+                    <a class="nav-link" th:href="@{/home#lucro}">Lucro</a>
                     <a class="nav-link" th:href="@{/home#gasto}">Gasto</a>
                     <a class="nav-link" th:href="@{/home#categoria}">Categoria</a>
                     <a class="nav-link btn btn-danger text-white" th:href="@{/auth/logout}">Logout</a>
@@ -69,22 +68,22 @@
                         <p>Aqui você pode cadastrar os lucros.</p>
                         <form id="registerFormLucro" onsubmit="return submitLucroForm()">
                             <div class="form-group mt-2">
-                                <label for="descricao">Descrição</label>
-                                <input type="text" class="form-control" id="descricao" name="descricao" required>
+                                <label for="descricaoLucro">Descrição</label>
+                                <input type="text" class="form-control" id="descricaoLucro" name="descricao" required>
                             </div>
                             <div class="form-group mt-2">
-                                <label for="categoria">Categoria</label>
+                                <label for="categoriaLucroCadastrar">Categoria</label>
                                 <select class="form-control" id="categoriaLucroCadastrar" name="categoria" required>
                                     <!-- Categorias de Lucro serão carregadas aqui via AJAX -->
                                 </select>
                             </div>
                             <div class="form-group mt-2">
-                                <label for="valor">Valor</label>
-                                <input type="number" step="0.01" class="form-control" id="valor" name="valor" required>
+                                <label for="valorLucro">Valor</label>
+                                <input type="number" step="0.01" class="form-control" id="valorLucro" name="valor" required>
                             </div>
                             <div class="form-group mt-2">
-                                <label for="data">Data</label>
-                                <input type="date" class="form-control" id="data" name="data" required>
+                                <label for="dataLucro">Data</label>
+                                <input type="date" class="form-control" id="dataLucro" name="data" required>
                             </div>
                             <button type="submit" class="btn btn-primary btn-block mt-4">Cadastrar Lucro</button>
                         </form>
@@ -99,7 +98,27 @@
                     </div>
                     <div class="card-body">
                         <p>Aqui você pode cadastrar os gastos.</p>
-                        <a href="#" class="btn btn-primary">Ver Gastos</a>
+                        <form id="registerFormGasto" onsubmit="return submitLucroForm()">
+                            <div class="form-group mt-2">
+                                <label for="descricaoGasto">Descrição</label>
+                                <input type="text" class="form-control" id="descricaoGasto" name="descricao" required>
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="categoriaGastoCadastrar">Categoria</label>
+                                <select class="form-control" id="categoriaGastoCadastrar" name="categoria" required>
+                                    <!-- Categorias de Gasto serão carregadas aqui via AJAX -->
+                                </select>
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="valorGasto">Valor</label>
+                                <input type="number" step="0.01" class="form-control" id="valorGasto" name="valor" required>
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="data">Data</label>
+                                <input type="date" class="form-control" id="data" name="dataGasto" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block mt-4">Cadastrar Gasto</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -148,10 +167,9 @@
         <p class="col-md-4 mb-0 text-body-secondary">© 2024 Sistema de Gestão Financeira por <a class="text-body-secondary" href="https://github.com/LucasFelip">Lucas Ferreira</a></p>
         <ul class="nav col-md-4 justify-content-end">
             <li class="nav-item"><a href="#principal" class="nav-link px-2 text-body-secondary">Principal</a></li>
-            <li class="nav-item"><a href="#lucro" class="nav-link px-2 text-body-secondary">Lucro</a></li>
             <li class="nav-item"><a href="#orcamento" class="nav-link px-2 text-body-secondary">Orçamento</a></li>
-            <li class="nav-item"><a href="#pessoa" class="nav-link px-2 text-body-secondary">Pessoa</a></li>
             <li class="nav-item"><a href="#relatorio" class="nav-link px-2 text-body-secondary">Relatório</a></li>
+            <li class="nav-item"><a href="#lucro" class="nav-link px-2 text-body-secondary">Lucro</a></li>
             <li class="nav-item"><a href="#gasto" class="nav-link px-2 text-body-secondary">Gasto</a></li>
             <li class="nav-item"><a href="#categoria" class="nav-link px-2 text-body-secondary">Categoria</a></li>
         </ul>
@@ -162,108 +180,9 @@
 </footer>
 
 
-<script>
-    function submitForm() {
-        const formData = {
-            nome: document.getElementById('nome').value,
-            tipoCategoria: document.getElementById('tipo').value
-        };
-
-        fetch('/categorias/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
-        })
-            .then(response => {
-                if (response.ok) {
-                    alert('Categoria registrada com sucesso!');
-                    window.location.reload();
-                } else {
-                    alert('Erro ao registrar categoria.');
-                }
-            });
-        return false;
-    }
-
-    $(document).ready(function() {
-        // Carregar categorias de Lucro
-        $.ajax({
-            url: '/categorias/tipo?tipo=LUCRO',
-            method: 'GET',
-            success: function(data) {
-                let lucroList = $('#categoriasLucro');
-                data.forEach(function(categoria) {
-                    lucroList.append('<li class="list-group-item">' + categoria.nome + '</li>');
-                });
-            },
-            error: function(xhr, status, error) {
-                console.error("Erro ao carregar categorias de Lucro:", error);
-            }
-        });
-
-        // Carregar categorias de Gasto
-        $.ajax({
-            url: '/categorias/tipo?tipo=GASTO',
-            method: 'GET',
-            success: function(data) {
-                let gastoList = $('#categoriasGasto');
-                data.forEach(function(categoria) {
-                    gastoList.append('<li class="list-group-item">' + categoria.nome + '</li>');
-                });
-            },
-            error: function(xhr, status, error) {
-                console.error("Erro ao carregar categorias de Gasto:", error);
-            }
-        });
-    });
-
-    $(document).ready(function() {
-        // Carregar categorias de Lucro
-        $.ajax({
-            url: '/categorias/tipo?tipo=LUCRO',
-            method: 'GET',
-            success: function(data) {
-                let categoriaSelect = $('#categoriaLucroCadastrar');
-                data.forEach(function(categoria) {
-                    categoriaSelect.append('<option value="' + categoria.id + '">' + categoria.nome + '</option>');
-                });
-            },
-            error: function(xhr, status, error) {
-                console.error("Erro ao carregar categorias de Lucro:", error);
-            }
-        });
-    });
-
-    function submitLucroForm() {
-        const formData = {
-            descricao: document.getElementById('descricao').value,
-            categoria: { id: document.getElementById('categoriaLucroCadastrar').value },
-            valor: parseFloat(document.getElementById('valor').value),
-            data: document.getElementById('data').value
-        };
-
-        fetch('/lucros/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
-        })
-            .then(response => {
-                if (response.ok) {
-                    alert('Lucro cadastrado com sucesso!');
-                    window.location.reload(); // Atualize a página para refletir as mudanças
-                } else {
-                    alert('Erro ao cadastrar lucro.');
-                }
-            });
-        return false;
-    }
-
-</script>
-
+<script src="/assets/js/lucro.js"></script>
+<script src="/assets/js/categoria.js"></script>
+<script src="/assets/js/gasto.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

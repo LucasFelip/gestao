@@ -5,6 +5,7 @@ import com.financeiro.gestao.domain.model.Categoria;
 import com.financeiro.gestao.domain.model.Gasto;
 import com.financeiro.gestao.domain.model.Pessoa;
 import com.financeiro.gestao.domain.service.GastoService;
+import com.financeiro.gestao.domain.service.LucroGastoService;
 import com.financeiro.gestao.util.EntityToDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,10 +21,12 @@ import java.util.List;
 public class GastoController {
 
     private final GastoService gastoService;
+    private final LucroGastoService lucroGastoService;
 
     @Autowired
-    public GastoController(GastoService gastoService) {
+    public GastoController(GastoService gastoService, LucroGastoService lucroGastoService) {
         this.gastoService = gastoService;
+        this.lucroGastoService = lucroGastoService;
     }
 
     @GetMapping
@@ -93,9 +96,9 @@ public class GastoController {
         return ResponseEntity.ok(total);
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<GastoDTO> save(@RequestBody Gasto gasto) {
-        Gasto savedGasto = gastoService.save(gasto);
+        Gasto savedGasto = lucroGastoService.salvarGasto(gasto);
         GastoDTO gastoDTO = EntityToDTOConverter.convertToDTO(savedGasto);
         return ResponseEntity.status(HttpStatus.CREATED).body(gastoDTO);
     }
