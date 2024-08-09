@@ -21,7 +21,7 @@ public class Lucro {
     @JoinColumn(name = "pessoa_id")
     private Pessoa pessoa;
     private String descricao;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
     private BigDecimal valor;

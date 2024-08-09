@@ -1,8 +1,11 @@
 package com.financeiro.gestao.domain.service;
 
+import com.financeiro.gestao.domain.exception.ResourceNotFoundException;
 import com.financeiro.gestao.domain.model.Pessoa;
 import com.financeiro.gestao.domain.repository.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,5 +31,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .credentialsExpired(false)
                 .disabled(false)
                 .build();
+    }
+
+    public Pessoa userConnected() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        return pessoaRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com o email: " + email));
     }
 }

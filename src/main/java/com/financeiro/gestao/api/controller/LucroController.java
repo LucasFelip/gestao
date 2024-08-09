@@ -1,10 +1,14 @@
 package com.financeiro.gestao.api.controller;
 
 import com.financeiro.gestao.api.dto.LucroDTO;
+import com.financeiro.gestao.domain.exception.ResourceNotFoundException;
 import com.financeiro.gestao.domain.model.Categoria;
 import com.financeiro.gestao.domain.model.Lucro;
 import com.financeiro.gestao.domain.model.Pessoa;
+import com.financeiro.gestao.domain.service.CategoriaService;
+import com.financeiro.gestao.domain.service.LucroGastoService;
 import com.financeiro.gestao.domain.service.LucroService;
+import com.financeiro.gestao.domain.service.UserDetailsServiceImpl;
 import com.financeiro.gestao.util.EntityToDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,10 +24,12 @@ import java.util.List;
 public class LucroController {
 
     private final LucroService lucroService;
+    private final LucroGastoService lucroGastoService;
 
     @Autowired
-    public LucroController(LucroService lucroService) {
+    public LucroController(LucroService lucroService, LucroGastoService lucroGastoService) {
         this.lucroService = lucroService;
+        this.lucroGastoService = lucroGastoService;
     }
 
     @GetMapping
@@ -93,9 +99,9 @@ public class LucroController {
         return ResponseEntity.ok(total);
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<LucroDTO> save(@RequestBody Lucro lucro) {
-        Lucro savedLucro = lucroService.save(lucro);
+        Lucro savedLucro = lucroGastoService.salvarLucro(lucro);
         LucroDTO lucroDTO = EntityToDTOConverter.convertToDTO(savedLucro);
         return ResponseEntity.status(HttpStatus.CREATED).body(lucroDTO);
     }

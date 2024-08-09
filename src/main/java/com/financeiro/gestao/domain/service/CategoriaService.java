@@ -42,6 +42,13 @@ public class CategoriaService {
     }
 
     @Transactional(readOnly = true)
+    public Optional<Categoria> findCategoriaById(Long id) {
+        Categoria categoria = categoriaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada com o ID: " + id));
+        return Optional.of(categoria);
+    }
+
+    @Transactional(readOnly = true)
     public Optional<CategoriaDTO> findByNome(String nome) {
         Categoria categoria = categoriaRepository.findByNome(nome)
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada com o nome: " + nome));
