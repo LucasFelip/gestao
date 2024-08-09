@@ -17,5 +17,6 @@ public class Categoria {
     private Long id;
     private String nome;
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private TipoCategoria tipoCategoria;
 }
