@@ -36,6 +36,29 @@
         <p>Você está autenticado!</p>
 
         <section class="border-top row" id="principal">
+            <div class="mt-4 col-md-12" id="orcamento">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Orçamento</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Aqui você pode gerenciar os orçamentos.</p>
+                        <a href="#" class="btn btn-primary">Cadastrar Orçamentos</a>
+
+                        <div class="mt-4 col-md-12" id="relatorio">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h4>Relatório</h4>
+                                </div>
+                                <div class="card-body">
+                                    <p>Aqui você pode gerenciar os relatórios.</p>
+                                    <a href="#" class="btn btn-primary">Ver Relatórios</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="mt-4 col-md-6" id="lucro">
                 <div class="card mb-4">
@@ -43,44 +66,28 @@
                         <h4>Lucro</h4>
                     </div>
                     <div class="card-body">
-                        <p>Aqui você pode gerenciar os lucros.</p>
-                        <a href="#" class="btn btn-primary">Ver Lucros</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-4 col-md-6" id="orcamento">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h4>Orçamento</h4>
-                    </div>
-                    <div class="card-body">
-                        <p>Aqui você pode gerenciar os orçamentos.</p>
-                        <a href="#" class="btn btn-primary">Ver Orçamentos</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-4 col-md-6" id="pessoa">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h4>Pessoa</h4>
-                    </div>
-                    <div class="card-body">
-                        <p>Aqui você pode gerenciar as pessoas.</p>
-                        <a href="#" class="btn btn-primary">Ver Pessoas</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-4 col-md-6" id="relatorio">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h4>Relatório</h4>
-                    </div>
-                    <div class="card-body">
-                        <p>Aqui você pode gerenciar os relatórios.</p>
-                        <a href="#" class="btn btn-primary">Ver Relatórios</a>
+                        <p>Aqui você pode cadastrar os lucros.</p>
+                        <form id="registerFormLucro" onsubmit="return submitLucroForm()">
+                            <div class="form-group mt-2">
+                                <label for="descricao">Descrição</label>
+                                <input type="text" class="form-control" id="descricao" name="descricao" required>
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="categoria">Categoria</label>
+                                <select class="form-control" id="categoriaLucroCadastrar" name="categoria" required>
+                                    <!-- Categorias de Lucro serão carregadas aqui via AJAX -->
+                                </select>
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="valor">Valor</label>
+                                <input type="number" step="0.01" class="form-control" id="valor" name="valor" required>
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="data">Data</label>
+                                <input type="date" class="form-control" id="data" name="data" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block mt-4">Cadastrar Lucro</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -91,8 +98,7 @@
                         <h4>Gasto</h4>
                     </div>
                     <div class="card-body">
-                        <p>Aqui você pode gerenciar os gastos.</p>
-                        <!-- Placeholder para Gasto -->
+                        <p>Aqui você pode cadastrar os gastos.</p>
                         <a href="#" class="btn btn-primary">Ver Gastos</a>
                     </div>
                 </div>
@@ -212,6 +218,50 @@
             }
         });
     });
+
+    $(document).ready(function() {
+        // Carregar categorias de Lucro
+        $.ajax({
+            url: '/categorias/tipo?tipo=LUCRO',
+            method: 'GET',
+            success: function(data) {
+                let categoriaSelect = $('#categoriaLucroCadastrar');
+                data.forEach(function(categoria) {
+                    categoriaSelect.append('<option value="' + categoria.id + '">' + categoria.nome + '</option>');
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error("Erro ao carregar categorias de Lucro:", error);
+            }
+        });
+    });
+
+    function submitLucroForm() {
+        const formData = {
+            descricao: document.getElementById('descricao').value,
+            categoria: { id: document.getElementById('categoriaLucroCadastrar').value },
+            valor: parseFloat(document.getElementById('valor').value),
+            data: document.getElementById('data').value
+        };
+
+        fetch('/lucros/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('Lucro cadastrado com sucesso!');
+                    window.location.reload(); // Atualize a página para refletir as mudanças
+                } else {
+                    alert('Erro ao cadastrar lucro.');
+                }
+            });
+        return false;
+    }
+
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
