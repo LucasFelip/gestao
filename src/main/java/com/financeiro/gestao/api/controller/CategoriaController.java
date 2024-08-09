@@ -60,7 +60,7 @@ public class CategoriaController {
         return ResponseEntity.ok(categorias);
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<CategoriaDTO> save(@RequestBody Categoria categoria) {
         Categoria savedCategoria = categoriaService.save(categoria);
         CategoriaDTO categoriaDTO = EntityToDTOConverter.convertToDTO(savedCategoria);
