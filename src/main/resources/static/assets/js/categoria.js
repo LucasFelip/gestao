@@ -30,7 +30,7 @@ $(document).ready(function() {
     });
 });
 
-function submitForm() {
+function submitCategoriaForm() {
     const formData = {
         nome: document.getElementById('nome').value,
         tipoCategoria: document.getElementById('tipo').value

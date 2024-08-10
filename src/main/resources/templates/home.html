@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script th:src="@{/assets/js/gasto.js}"></script>
+    <script th:src="@{/assets/js/lucro.js}"></script>
+    <script th:src="@{/assets/js/categoria.js}"></script>
 </head>
 <body>
 <header class="sticky-top">
@@ -98,7 +101,7 @@
                     </div>
                     <div class="card-body">
                         <p>Aqui você pode cadastrar os gastos.</p>
-                        <form id="registerFormGasto" onsubmit="return submitLucroForm()">
+                        <form id="registerFormGasto" onsubmit="return submitGastoForm()">
                             <div class="form-group mt-2">
                                 <label for="descricaoGasto">Descrição</label>
                                 <input type="text" class="form-control" id="descricaoGasto" name="descricao" required>
@@ -114,8 +117,8 @@
                                 <input type="number" step="0.01" class="form-control" id="valorGasto" name="valor" required>
                             </div>
                             <div class="form-group mt-2">
-                                <label for="data">Data</label>
-                                <input type="date" class="form-control" id="data" name="dataGasto" required>
+                                <label for="dataGasto">Data</label>
+                                <input type="date" class="form-control" id="dataGasto" name="data" required>
                             </div>
                             <button type="submit" class="btn btn-primary btn-block mt-4">Cadastrar Gasto</button>
                         </form>
@@ -130,7 +133,7 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <form class="col-md-4 mt-2" id="registerFormCategory" th:action="@{/categorias/register}" method="post" onsubmit="return submitForm()">
+                            <form class="col-md-4 mt-2" id="registerFormCategory" onsubmit="return submitCategoriaForm()">
                                 <h5>Registro de nova categoria</h5>
                                 <div class="form-group mt-2">
                                     <label for="nome">Nome</label>
@@ -179,10 +182,6 @@
     </div>
 </footer>
 
-
-<script src="/assets/js/lucro.js"></script>
-<script src="/assets/js/categoria.js"></script>
-<script src="/assets/js/gasto.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
