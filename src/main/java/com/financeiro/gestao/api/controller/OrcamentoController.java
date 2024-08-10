@@ -72,7 +72,7 @@ public class OrcamentoController {
         return ResponseEntity.ok(orcamentos);
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<OrcamentoDTO> save(@RequestBody Orcamento orcamento) {
         Orcamento savedOrcamento = orcamentoService.save(orcamento);
         OrcamentoDTO orcamentoDTO = EntityToDTOConverter.convertToDTO(savedOrcamento);

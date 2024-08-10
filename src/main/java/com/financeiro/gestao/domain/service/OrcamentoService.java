@@ -21,10 +21,12 @@ import java.util.stream.Collectors;
 public class OrcamentoService {
 
     private final OrcamentoRepository orcamentoRepository;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
 
     @Autowired
-    public OrcamentoService(OrcamentoRepository orcamentoRepository) {
+    public OrcamentoService(OrcamentoRepository orcamentoRepository, UserDetailsServiceImpl userDetailsServiceImpl) {
         this.orcamentoRepository = orcamentoRepository;
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
     }
 
     @Transactional(readOnly = true)
@@ -83,6 +85,7 @@ public class OrcamentoService {
 
     @Transactional
     public Orcamento save(Orcamento orcamento) {
+        orcamento.setPessoa(userDetailsServiceImpl.userConnected());
         validarOrcamento(orcamento);
         return orcamentoRepository.save(orcamento);
     }
