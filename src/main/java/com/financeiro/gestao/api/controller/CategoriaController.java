@@ -2,9 +2,14 @@ package com.financeiro.gestao.api.controller;
 
 import com.financeiro.gestao.api.dto.CategoriaDTO;
 import com.financeiro.gestao.domain.model.Categoria;
+import com.financeiro.gestao.domain.model.enums.TipoCategoria;
 import com.financeiro.gestao.domain.service.CategoriaService;
 import com.financeiro.gestao.util.EntityToDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -58,6 +63,17 @@ public class CategoriaController {
     public ResponseEntity<List<CategoriaDTO>> findCategoriasByTipoCategoria(@RequestParam String tipo) {
         List<CategoriaDTO> categorias = categoriaService.findCategoriasByTipoCategoria(tipo);
         return ResponseEntity.ok(categorias);
+    }
+
+    @GetMapping("/tipo/paginado")
+    public ResponseEntity<Page<CategoriaDTO>> findCategoriasByTipoCategoriaPaginado(
+            @RequestParam String tipo,
+            @RequestParam int page,
+            @RequestParam int size) {
+        TipoCategoria tipoCategoria = TipoCategoria.valueOf(tipo.toUpperCase());
+        Page<Categoria> categoriasPage = categoriaService.buscarCategoriasPorTipoPaginado(tipoCategoria, page, size);
+        Page<CategoriaDTO> categoriasDTOPage = categoriasPage.map(EntityToDTOConverter::convertToDTO);
+        return ResponseEntity.ok(categoriasDTOPage);
     }
 
     @PostMapping("/register")
