@@ -20,14 +20,17 @@ import java.util.stream.Collectors;
 public class ReportService {
 
     private final ReportRepository reportRepository;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
 
     @Autowired
-    public ReportService(ReportRepository reportRepository) {
+    public ReportService(ReportRepository reportRepository, UserDetailsServiceImpl userDetailsServiceImpl) {
         this.reportRepository = reportRepository;
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
     }
 
     @Transactional(readOnly = true)
-    public List<GastoDTO> findGastosByPessoaAndPeriodo(Pessoa pessoa, LocalDate inicio, LocalDate fim) {
+    public List<GastoDTO> findGastosByPessoaAndPeriodo(LocalDate inicio, LocalDate fim) {
+        Pessoa pessoa = userDetailsServiceImpl.userConnected();
         List<Gasto> gastos = reportRepository.findGastosByPessoaAndPeriodo(pessoa, inicio, fim);
         return gastos.stream()
                 .map(EntityToDTOConverter::convertToDTO)
@@ -35,7 +38,8 @@ public class ReportService {
     }
 
     @Transactional(readOnly = true)
-    public List<LucroDTO> findLucrosByPessoaAndPeriodo(Pessoa pessoa, LocalDate inicio, LocalDate fim) {
+    public List<LucroDTO> findLucrosByPessoaAndPeriodo(LocalDate inicio, LocalDate fim) {
+        Pessoa pessoa = userDetailsServiceImpl.userConnected();
         List<Lucro> lucros = reportRepository.findLucrosByPessoaAndPeriodo(pessoa, inicio, fim);
         return lucros.stream()
                 .map(EntityToDTOConverter::convertToDTO)
@@ -43,7 +47,8 @@ public class ReportService {
     }
 
     @Transactional(readOnly = true)
-    public BigDecimal calculateSaldoByPessoaAndPeriodo(Pessoa pessoa, LocalDate inicio, LocalDate fim) {
+    public BigDecimal calculateSaldoByPessoaAndPeriodo(LocalDate inicio, LocalDate fim) {
+        Pessoa pessoa = userDetailsServiceImpl.userConnected();
         return reportRepository.calculateSaldoByPessoaAndPeriodo(pessoa, inicio, fim);
     }
 }
