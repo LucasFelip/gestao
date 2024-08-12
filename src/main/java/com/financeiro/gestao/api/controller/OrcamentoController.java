@@ -38,9 +38,9 @@ public class OrcamentoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/pessoa/{pessoaId}")
-    public ResponseEntity<List<OrcamentoDTO>> findByPessoaId(@PathVariable Pessoa pessoa) {
-        List<OrcamentoDTO> orcamentos = orcamentoService.findByPessoa(pessoa);
+    @GetMapping("/pessoa")
+    public ResponseEntity<List<OrcamentoDTO>> findByPessoaId() {
+        List<OrcamentoDTO> orcamentos = orcamentoService.findByPessoa();
         return ResponseEntity.ok(orcamentos);
     }
 

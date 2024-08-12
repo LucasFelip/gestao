@@ -91,8 +91,8 @@ public class GastoController {
     }
 
     @GetMapping("/sum")
-    public ResponseEntity<BigDecimal> findSumValorByPessoaAndDataBetween(@RequestParam Pessoa pessoa, @RequestParam LocalDate inicio, @RequestParam LocalDate fim) {
-        BigDecimal total = gastoService.findSumValorByPessoaAndDataBetween(pessoa, inicio, fim);
+    public ResponseEntity<BigDecimal> findSumValorByPessoaAndDataBetween(@RequestParam LocalDate inicio, @RequestParam LocalDate fim) {
+        BigDecimal total = gastoService.findSumValorByPessoaAndDataBetween(inicio, fim);
         return ResponseEntity.ok(total);
     }
 

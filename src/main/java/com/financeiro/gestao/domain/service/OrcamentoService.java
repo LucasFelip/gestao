@@ -44,7 +44,8 @@ public class OrcamentoService {
     }
 
     @Transactional(readOnly = true)
-    public List<OrcamentoDTO> findByPessoa(Pessoa pessoa) {
+    public List<OrcamentoDTO> findByPessoa() {
+        Pessoa pessoa = userDetailsServiceImpl.userConnected();
         return orcamentoRepository.findByPessoa(pessoa)
                 .stream()
                 .map(EntityToDTOConverter::convertToDTO)

@@ -4,6 +4,8 @@ import com.financeiro.gestao.domain.model.Categoria;
 import com.financeiro.gestao.domain.model.Gasto;
 import com.financeiro.gestao.domain.model.Pessoa;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -20,6 +22,6 @@ public interface GastoRepository extends JpaRepository<Gasto, Long> {
     List<Gasto> findByPessoaAndCategoria(Pessoa pessoa, Categoria categoria);
     List<Gasto> findByDataAfter(LocalDate data);
     List<Gasto> findByDataBefore(LocalDate data);
-    BigDecimal findSumValorByPessoaAndDataBetween(Pessoa pessoa, LocalDate inicio, LocalDate fim);
+    @Query("SELECT SUM(g.valor) FROM Gasto g WHERE g.pessoa = :pessoa AND g.data BETWEEN :inicio AND :fim")
+    BigDecimal findSumValorByPessoaAndDataBetween(@Param("pessoa") Pessoa pessoa, @Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
 }
-

@@ -23,6 +23,8 @@ public class LucroService {
 
     @Autowired
     private LucroRepository lucroRepository;
+    @Autowired
+    private UserDetailsServiceImpl userDetailsServiceImpl;
 
     @Transactional(readOnly = true)
     public List<LucroDTO> findAll() {
@@ -103,7 +105,8 @@ public class LucroService {
     }
 
     @Transactional(readOnly = true)
-    public BigDecimal findSumValorByPessoaAndDataBetween(Pessoa pessoa, LocalDate inicio, LocalDate fim) {
+    public BigDecimal findSumValorByPessoaAndDataBetween(LocalDate inicio, LocalDate fim) {
+        Pessoa pessoa = userDetailsServiceImpl.userConnected();
         return lucroRepository.findSumValorByPessoaAndDataBetween(pessoa, inicio, fim);
     }
 

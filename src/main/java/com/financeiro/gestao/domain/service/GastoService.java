@@ -23,6 +23,8 @@ public class GastoService {
 
     @Autowired
     private GastoRepository gastoRepository;
+    @Autowired
+    private UserDetailsServiceImpl userDetailsServiceImpl;
 
     @Transactional(readOnly = true)
     public List<GastoDTO> findAll() {
@@ -103,7 +105,8 @@ public class GastoService {
     }
 
     @Transactional(readOnly = true)
-    public BigDecimal findSumValorByPessoaAndDataBetween(Pessoa pessoa, LocalDate inicio, LocalDate fim) {
+    public BigDecimal findSumValorByPessoaAndDataBetween(LocalDate inicio, LocalDate fim) {
+        Pessoa pessoa = userDetailsServiceImpl.userConnected();
         return gastoRepository.findSumValorByPessoaAndDataBetween(pessoa, inicio, fim);
     }
 
