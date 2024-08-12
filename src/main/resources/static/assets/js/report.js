@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    let chartGastos = null;
-    let chartLucros = null;
+    let chartFinanceiro = null;
 
     // Função para definir as datas padrão
     function definirDatasPadrao() {
@@ -11,52 +10,75 @@ document.addEventListener('DOMContentLoaded', function () {
         return { primeiroDiaAno, ultimoDiaAno };
     }
 
-    // Função para carregar dados de um endpoint e renderizar um gráfico
-    function carregarGrafico(url, canvasId, label) {
-        return fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                console.log(data); // Log para depuração
+    // Função para carregar dados de lucros e gastos e renderizar um gráfico combinado
+    function carregarGraficoFinanceiro(inicio, fim) {
+        const urlGastos = `/reports/gastos?inicio=${inicio}&fim=${fim}`;
+        const urlLucros = `/reports/lucros?inicio=${inicio}&fim=${fim}`;
 
-                const ctx = document.getElementById(canvasId).getContext('2d');
+        Promise.all([
+            fetch(urlGastos).then(response => response.json()),
+            fetch(urlLucros).then(response => response.json())
+        ])
+            .then(([dataGastos, dataLucros]) => {
+                const ctx = document.getElementById('graficoFinanceiro').getContext('2d');
 
                 // Se já existe um gráfico, destrua-o antes de criar um novo
-                if (canvasId === 'graficoGastos' && chartGastos) {
-                    chartGastos.destroy();
-                } else if (canvasId === 'graficoLucros' && chartLucros) {
-                    chartLucros.destroy();
+                if (chartFinanceiro) {
+                    chartFinanceiro.destroy();
                 }
 
-                // Crie o novo gráfico
-                const chart = new Chart(ctx, {
-                    type: 'bar', // ou 'line', 'pie', etc.
+                // Preparar os dados para o gráfico
+                const labels = [...new Set([...dataGastos.map(d => d.descricao), ...dataLucros.map(d => d.descricao)])];
+                const gastosMap = Object.fromEntries(dataGastos.map(d => [d.descricao, d.valor]));
+                const lucrosMap = Object.fromEntries(dataLucros.map(d => [d.descricao, d.valor]));
+
+                const gastosData = labels.map(label => gastosMap[label] || 0);
+                const lucrosData = labels.map(label => lucrosMap[label] || 0);
+
+                // Criar o gráfico combinado
+                chartFinanceiro = new Chart(ctx, {
+                    type: 'bar',
                     data: {
-                        labels: data.map(d => d.descricao || 'Sem Descrição'),
-                        datasets: [{
-                            label: label,
-                            data: data.map(d => d.valor || 0),
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1
-                        }]
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Gastos',
+                                data: gastosData,
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Lucros',
+                                data: lucrosData,
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            }
+                        ]
                     },
                     options: {
                         scales: {
                             y: {
-                                beginAtZero: true
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return 'R$ ' + value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                                    }
+                                }
+                            }
+                        },
+                        tooltips: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return tooltipItem.dataset.label + ': R$ ' + tooltipItem.yLabel.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                                }
                             }
                         }
                     }
                 });
-
-                // Atribua o novo gráfico à referência correta
-                if (canvasId === 'graficoGastos') {
-                    chartGastos = chart;
-                } else if (canvasId === 'graficoLucros') {
-                    chartLucros = chart;
-                }
             })
-            .catch(error => console.error('Erro ao carregar o gráfico:', error));
+            .catch(error => console.error('Erro ao carregar os dados:', error));
     }
 
     // Função para carregar os gráficos com base nas datas
@@ -68,8 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let fim = document.getElementById('fim').value || ultimoDiaAno;
 
         if (inicio && fim) {
-            carregarGrafico(`/reports/gastos?inicio=${inicio}&fim=${fim}`, 'graficoGastos', 'Gastos');
-            carregarGrafico(`/reports/lucros?inicio=${inicio}&fim=${fim}`, 'graficoLucros', 'Lucros');
+            carregarGraficoFinanceiro(inicio, fim);
         }
     }
 
