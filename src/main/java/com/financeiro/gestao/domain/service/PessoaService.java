@@ -18,124 +18,185 @@ import java.util.stream.Collectors;
 
 @Service
 public class PessoaService {
-
-    private final PessoaRepository pessoaRepository;
-
     @Autowired
-    public PessoaService(PessoaRepository pessoaRepository) {
-        this.pessoaRepository = pessoaRepository;
-    }
+    private PessoaRepository pessoaRepository;
 
     @Transactional(readOnly = true)
     public List<PessoaDTO> findAll() {
-        List<Pessoa> pessoas = pessoaRepository.findAll();
-        return pessoas.stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
+        try {
+            List<Pessoa> pessoas = pessoaRepository.findAll();
+            return pessoas.stream()
+                    .map(EntityToDTOConverter::convertToDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar todas as pessoas: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public Optional<PessoaDTO> findById(Long id) {
-        return pessoaRepository.findById(id)
-                .map(EntityToDTOConverter::convertToDTO);
+        try {
+            return pessoaRepository.findById(id)
+                    .map(EntityToDTOConverter::convertToDTO);
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar pessoa com ID: " + id + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public Optional<PessoaDTO> findByCpf(String cpf) {
-        return pessoaRepository.findByCpf(cpf)
-                .map(EntityToDTOConverter::convertToDTO);
+        try {
+            return pessoaRepository.findByCpf(cpf)
+                    .map(EntityToDTOConverter::convertToDTO);
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar pessoa com CPF: " + cpf + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public Optional<PessoaDTO> findByEmail(String email) {
-        return pessoaRepository.findByEmail(email)
-                .map(EntityToDTOConverter::convertToDTO);
+        try {
+            return pessoaRepository.findByEmail(email)
+                    .map(EntityToDTOConverter::convertToDTO);
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar pessoa com email: " + email + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public String getNomeUsuarioLogado() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
-        Pessoa pessoa = pessoaRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com o email: " + email));
-        return pessoa.getNome();
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String email = auth.getName();
+            Pessoa pessoa = pessoaRepository.findByEmail(email)
+                    .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com o email: " + email));
+            return pessoa.getNome();
+        } catch (ResourceNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar o nome do usuário logado: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public List<PessoaDTO> findByNomeContaining(String nome) {
-        return pessoaRepository.findByNomeContaining(nome)
-                .stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
+        try {
+            return pessoaRepository.findByNomeContaining(nome)
+                    .stream()
+                    .map(EntityToDTOConverter::convertToDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar pessoas contendo o nome: " + nome + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public Optional<PessoaDTO> findByNomeAndEmail(String nome, String email) {
-        return pessoaRepository.findByNomeAndEmail(nome, email)
-                .map(EntityToDTOConverter::convertToDTO);
+        try {
+            return pessoaRepository.findByNomeAndEmail(nome,email)
+                    .map(EntityToDTOConverter::convertToDTO);
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar pessoa com nome: " + nome + " e email: " + email + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public boolean existsByCpf(String cpf) {
-        return pessoaRepository.existsByCpf(cpf);
+        try {
+            return pessoaRepository.existsByCpf(cpf);
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao verificar a existência de pessoa com CPF: " + cpf + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public boolean existsByEmail(String email) {
-        return pessoaRepository.existsByEmail(email);
+        try {
+            return pessoaRepository.existsByEmail(email);
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao verificar a existência de pessoa com email: " + email + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public Optional<PessoaDTO> findByEmailAndSenha(String email, String senha) {
-        return pessoaRepository.findByEmailAndSenha(email, senha)
-                .map(EntityToDTOConverter::convertToDTO);
+        try {
+            return pessoaRepository.findByEmailAndSenha(email, senha)
+                    .map(EntityToDTOConverter::convertToDTO);
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar pessoa com email: " + email + " e senha fornecida. Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public List<PessoaDTO> findByNomeStartingWith(String prefixo) {
-        return pessoaRepository.findByNomeStartingWith(prefixo)
-                .stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
+        try {
+            return pessoaRepository.findByNomeStartingWith(prefixo)
+                    .stream()
+                    .map(EntityToDTOConverter::convertToDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar pessoas começando com o prefixo: " + prefixo + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public List<PessoaDTO> findByTelefoneContaining(String numero) {
-        return pessoaRepository.findByTelefoneContaining(numero)
-                .stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
+        try {
+            return pessoaRepository.findByTelefoneContaining(numero)
+                    .stream()
+                    .map(EntityToDTOConverter::convertToDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar pessoas contendo o telefone: " + numero + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional
     public Pessoa save(Pessoa pessoa) {
-        validarPessoa(pessoa);
-        return pessoaRepository.save(pessoa);
+        try {
+            validarPessoa(pessoa);
+            return pessoaRepository.save(pessoa);
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao salvar a pessoa: " + e.getMessage());
+        }
     }
 
     @Transactional
     public Pessoa update(Long id, Pessoa pessoaAtualizada) {
-        Pessoa pessoa = pessoaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Pessoa não encontrada com o ID: " + id));
+        try {
+            Pessoa pessoa = pessoaRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Pessoa não encontrada com o ID: " + id));
 
-        pessoa.setNome(pessoaAtualizada.getNome());
-        pessoa.setCpf(pessoaAtualizada.getCpf());
-        pessoa.setEmail(pessoaAtualizada.getEmail());
-        pessoa.setSenha(pessoaAtualizada.getSenha());
-        pessoa.setTelefone(pessoaAtualizada.getTelefone());
-        pessoa.setRoles(pessoaAtualizada.getRoles());
+            pessoa.setNome(pessoaAtualizada.getNome());
+            pessoa.setCpf(pessoaAtualizada.getCpf());
+            pessoa.setEmail(pessoaAtualizada.getEmail());
+            pessoa.setSenha(pessoaAtualizada.getSenha());
+            pessoa.setTelefone(pessoaAtualizada.getTelefone());
+            pessoa.setRoles(pessoaAtualizada.getRoles());
 
-        validarPessoa(pessoa);
+            validarPessoa(pessoa);
 
-        return pessoaRepository.save(pessoa);
+            return pessoaRepository.save(pessoa);
+        } catch (ResourceNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao atualizar a pessoa com ID: " + id + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional
     public void delete(Long id) {
-        if (!pessoaRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Pessoa não encontrada com o ID: " + id);
+        try {
+            if (!pessoaRepository.existsById(id)) {
+                throw new ResourceNotFoundException("Pessoa não encontrada com o ID: " + id);
+            }
+            pessoaRepository.deleteById(id);
+        } catch (ResourceNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao excluir a pessoa com ID: " + id + ". Detalhes: " + e.getMessage());
         }
-        pessoaRepository.deleteById(id);
     }
 
     private void validarPessoa(Pessoa pessoa) {

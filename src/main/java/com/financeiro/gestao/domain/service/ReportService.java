@@ -2,6 +2,7 @@ package com.financeiro.gestao.domain.service;
 
 import com.financeiro.gestao.api.dto.GastoDTO;
 import com.financeiro.gestao.api.dto.LucroDTO;
+import com.financeiro.gestao.domain.exception.BusinessRuleException;
 import com.financeiro.gestao.domain.model.Gasto;
 import com.financeiro.gestao.domain.model.Lucro;
 import com.financeiro.gestao.domain.model.Pessoa;
@@ -19,36 +20,46 @@ import java.util.stream.Collectors;
 @Service
 public class ReportService {
 
-    private final ReportRepository reportRepository;
-    private final UserDetailsServiceImpl userDetailsServiceImpl;
+    @Autowired
+    private ReportRepository reportRepository;
 
     @Autowired
-    public ReportService(ReportRepository reportRepository, UserDetailsServiceImpl userDetailsServiceImpl) {
-        this.reportRepository = reportRepository;
-        this.userDetailsServiceImpl = userDetailsServiceImpl;
+    private UserDetailsServiceImpl userDetailsServiceImpl;
+
+    private Pessoa getLoggedPessoa() {
+        return userDetailsServiceImpl.userConnected();
     }
 
     @Transactional(readOnly = true)
     public List<GastoDTO> findGastosByPessoaAndPeriodo(LocalDate inicio, LocalDate fim) {
-        Pessoa pessoa = userDetailsServiceImpl.userConnected();
-        List<Gasto> gastos = reportRepository.findGastosByPessoaAndPeriodo(pessoa, inicio, fim);
-        return gastos.stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
+        try {
+            List<Gasto> gastos = reportRepository.findGastosByPessoaAndPeriodo(getLoggedPessoa(), inicio, fim);
+            return gastos.stream()
+                    .map(EntityToDTOConverter::convertToDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar gastos no período de " + inicio + " a " + fim + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public List<LucroDTO> findLucrosByPessoaAndPeriodo(LocalDate inicio, LocalDate fim) {
-        Pessoa pessoa = userDetailsServiceImpl.userConnected();
-        List<Lucro> lucros = reportRepository.findLucrosByPessoaAndPeriodo(pessoa, inicio, fim);
-        return lucros.stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
+        try {
+            List<Lucro> lucros = reportRepository.findLucrosByPessoaAndPeriodo(getLoggedPessoa(), inicio, fim);
+            return lucros.stream()
+                    .map(EntityToDTOConverter::convertToDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar lucros no período de " + inicio + " a " + fim + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public BigDecimal calculateSaldoByPessoaAndPeriodo(LocalDate inicio, LocalDate fim) {
-        Pessoa pessoa = userDetailsServiceImpl.userConnected();
-        return reportRepository.calculateSaldoByPessoaAndPeriodo(pessoa, inicio, fim);
+        try {
+            return reportRepository.calculateSaldoByPessoaAndPeriodo(getLoggedPessoa(), inicio, fim);
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao calcular saldo no período de " + inicio + " a " + fim + ". Detalhes: " + e.getMessage());
+        }
     }
 }

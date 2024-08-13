@@ -60,15 +60,15 @@ public class OrcamentoController {
         return ResponseEntity.ok(orcamentos);
     }
 
-    @GetMapping("/pessoa/{pessoaId}/data-fim")
-    public ResponseEntity<List<OrcamentoDTO>> findByPessoaAndDataFimAfter(@PathVariable Pessoa pessoa, @RequestParam LocalDate hoje) {
-        List<OrcamentoDTO> orcamentos = orcamentoService.findByPessoaAndDataFimAfter(pessoa, hoje);
+    @GetMapping("/pessoa/data-fim")
+    public ResponseEntity<List<OrcamentoDTO>> findByPessoaAndDataFimAfter(@RequestParam LocalDate hoje) {
+        List<OrcamentoDTO> orcamentos = orcamentoService.findByPessoaAndDataFimAfter(hoje);
         return ResponseEntity.ok(orcamentos);
     }
 
-    @GetMapping("/pessoa/{pessoaId}/data-inicio-fim")
-    public ResponseEntity<List<OrcamentoDTO>> findByPessoaAndDataInicioBeforeAndDataFimAfter(@PathVariable Pessoa pessoa, @RequestParam LocalDate inicio, @RequestParam LocalDate fim) {
-        List<OrcamentoDTO> orcamentos = orcamentoService.findByPessoaAndDataInicioBeforeAndDataFimAfter(pessoa, inicio, fim);
+    @GetMapping("/pessoa/data-inicio-fim")
+    public ResponseEntity<List<OrcamentoDTO>> findByPessoaAndDataInicioBeforeAndDataFimAfter(@RequestParam LocalDate inicio, @RequestParam LocalDate fim) {
+        List<OrcamentoDTO> orcamentos = orcamentoService.findByPessoaAndDataInicioBeforeAndDataFimAfter(inicio, fim);
         return ResponseEntity.ok(orcamentos);
     }
 

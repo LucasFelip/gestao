@@ -43,7 +43,7 @@ public class ReportRepositoryImpl implements ReportRepository {
     @Override
     public BigDecimal calculateSaldoByPessoaAndPeriodo(Pessoa pessoa, LocalDate inicio, LocalDate fim) {
         BigDecimal totalGastos = entityManager.createQuery(
-                        "SELECT SUM(g.valor) FROM Gasto g WHERE g.pessoa = :pessoa AND g.data BETWEEN :inicio AND :fim",
+                        "SELECT COALESCE(SUM(g.valor), 0) FROM Gasto g WHERE g.pessoa = :pessoa AND g.data BETWEEN :inicio AND :fim",
                         BigDecimal.class)
                 .setParameter("pessoa", pessoa)
                 .setParameter("inicio", inicio)
@@ -51,7 +51,7 @@ public class ReportRepositoryImpl implements ReportRepository {
                 .getSingleResult();
 
         BigDecimal totalLucros = entityManager.createQuery(
-                        "SELECT SUM(l.valor) FROM Lucro l WHERE l.pessoa = :pessoa AND l.data BETWEEN :inicio AND :fim",
+                        "SELECT COALESCE(SUM(l.valor), 0) FROM Lucro l WHERE l.pessoa = :pessoa AND l.data BETWEEN :inicio AND :fim",
                         BigDecimal.class)
                 .setParameter("pessoa", pessoa)
                 .setParameter("inicio", inicio)

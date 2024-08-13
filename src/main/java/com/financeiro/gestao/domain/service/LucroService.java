@@ -23,121 +23,173 @@ public class LucroService {
 
     @Autowired
     private LucroRepository lucroRepository;
+
     @Autowired
     private UserDetailsServiceImpl userDetailsServiceImpl;
 
+    private Pessoa getLoggedPessoa() {
+        return userDetailsServiceImpl.userConnected();
+    }
+
     @Transactional(readOnly = true)
     public List<LucroDTO> findAll() {
-        return lucroRepository.findAll()
-                .stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
+        try {
+            return lucroRepository.findAll()
+                    .stream()
+                    .map(EntityToDTOConverter::convertToDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar todos os lucros: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public Optional<LucroDTO> findById(Long id) {
-        return lucroRepository.findById(id)
-                .map(EntityToDTOConverter::convertToDTO);
+        try {
+            return lucroRepository.findById(id)
+                    .map(EntityToDTOConverter::convertToDTO);
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar lucro com ID: " + id + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
-    public List<LucroDTO> findByPessoa(Pessoa pessoa) {
-        return lucroRepository.findByPessoa(pessoa)
-                .stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
+    public List<LucroDTO> findByPessoa() {
+        try {
+            return lucroRepository.findByPessoa(getLoggedPessoa())
+                    .stream()
+                    .map(EntityToDTOConverter::convertToDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar lucros do usuário logado: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public List<LucroDTO> findByDataBetween(LocalDate inicio, LocalDate fim) {
-        return lucroRepository.findByDataBetween(inicio, fim)
-                .stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
+        try {
+            return lucroRepository.findByPessoaAndDataBetween(getLoggedPessoa(), inicio, fim)
+                    .stream()
+                    .map(EntityToDTOConverter::convertToDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar lucros entre as datas " + inicio + " e " + fim + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public List<LucroDTO> findByCategoria(Categoria categoria) {
-        return lucroRepository.findByCategoria(categoria)
-                .stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
+        try {
+            return lucroRepository.findByPessoaAndCategoria(getLoggedPessoa(), categoria)
+                    .stream()
+                    .map(EntityToDTOConverter::convertToDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar lucros da categoria: " + categoria.getNome() + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public List<LucroDTO> findByDescricaoContaining(String descricao) {
-        return lucroRepository.findByDescricaoContaining(descricao)
-                .stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
+        try {
+            return lucroRepository.findByPessoaAndDescricaoContaining(getLoggedPessoa(), descricao)
+                    .stream()
+                    .map(EntityToDTOConverter::convertToDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar lucros com descrição contendo: " + descricao + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public List<LucroDTO> findByValorGreaterThan(BigDecimal valor) {
-        return lucroRepository.findByValorGreaterThan(valor)
-                .stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public List<LucroDTO> findByPessoaIdAndCategoriaId(Long pessoaId, Long categoriaId) {
-        return lucroRepository.findByPessoaIdAndCategoriaId(pessoaId, categoriaId)
-                .stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
+        try {
+            return lucroRepository.findByPessoaAndValorGreaterThan(getLoggedPessoa(), valor)
+                    .stream()
+                    .map(EntityToDTOConverter::convertToDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar lucros com valor maior que " + valor + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public List<LucroDTO> findByDataAfter(LocalDate data) {
-        return lucroRepository.findByDataAfter(data)
-                .stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
+        try {
+            return lucroRepository.findByPessoaAndDataAfter(getLoggedPessoa(), data)
+                    .stream()
+                    .map(EntityToDTOConverter::convertToDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar lucros após a data: " + data + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public List<LucroDTO> findByDataBefore(LocalDate data) {
-        return lucroRepository.findByDataBefore(data)
-                .stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
+        try {
+            return lucroRepository.findByPessoaAndDataBefore(getLoggedPessoa(), data)
+                    .stream()
+                    .map(EntityToDTOConverter::convertToDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar lucros antes da data: " + data + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public BigDecimal findSumValorByPessoaAndDataBetween(LocalDate inicio, LocalDate fim) {
-        Pessoa pessoa = userDetailsServiceImpl.userConnected();
-        return lucroRepository.findSumValorByPessoaAndDataBetween(pessoa, inicio, fim);
+        try {
+            return lucroRepository.findSumValorByPessoaAndDataBetween(getLoggedPessoa(), inicio, fim);
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao somar os valores dos lucros entre as datas " + inicio + " e " + fim + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional
     public Lucro save(Lucro lucro) {
-        validarLucro(lucro);
-        return lucroRepository.save(lucro);
+        try {
+            validarLucro(lucro);
+            return lucroRepository.save(lucro);
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao salvar o lucro: " + e.getMessage());
+        }
     }
 
     @Transactional
     public Lucro update(Long id, Lucro lucroAtualizado) {
-        Lucro lucro = lucroRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Lucro não encontrado com o ID: " + id));
+        try {
+            Lucro lucro = lucroRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Lucro não encontrado com o ID: " + id));
 
-        lucro.setDescricao(lucroAtualizado.getDescricao());
-        lucro.setValor(lucroAtualizado.getValor());
-        lucro.setData(lucroAtualizado.getData());
-        lucro.setCategoria(lucroAtualizado.getCategoria());
-        lucro.setPessoa(lucroAtualizado.getPessoa());
+            lucro.setDescricao(lucroAtualizado.getDescricao());
+            lucro.setValor(lucroAtualizado.getValor());
+            lucro.setData(lucroAtualizado.getData());
+            lucro.setCategoria(lucroAtualizado.getCategoria());
+            lucro.setPessoa(lucroAtualizado.getPessoa());
 
-        validarLucro(lucro);
+            validarLucro(lucro);
 
-        return lucroRepository.save(lucro);
+            return lucroRepository.save(lucro);
+        } catch (ResourceNotFoundException e) {
+            throw e; // Re-lança a exceção de recurso não encontrado
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao atualizar o lucro com ID: " + id + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional
     public void delete(Long id) {
-        if (!lucroRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Lucro não encontrado com o ID: " + id);
+        try {
+            if (!lucroRepository.existsById(id)) {
+                throw new ResourceNotFoundException("Lucro não encontrado com o ID: " + id);
+            }
+            lucroRepository.deleteById(id);
+        } catch (ResourceNotFoundException e) {
+            throw e; // Re-lança a exceção de recurso não encontrado
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao excluir o lucro com ID: " + id + ". Detalhes: " + e.getMessage());
         }
-        lucroRepository.deleteById(id);
     }
 
     private void validarLucro(Lucro lucro) {

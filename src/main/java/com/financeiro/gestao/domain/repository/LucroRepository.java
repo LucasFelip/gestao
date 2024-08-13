@@ -15,13 +15,12 @@ import java.util.List;
 @Repository
 public interface LucroRepository extends JpaRepository<Lucro, Long> {
     List<Lucro> findByPessoa(Pessoa pessoa);
-    List<Lucro> findByDataBetween(LocalDate inicio, LocalDate fim);
-    List<Lucro> findByCategoria(Categoria categoria);
-    List<Lucro> findByDescricaoContaining(String descricao);
-    List<Lucro> findByValorGreaterThan(BigDecimal valor);
-    List<Lucro> findByPessoaIdAndCategoriaId(Long pessoaId, Long categoriaId);
-    List<Lucro> findByDataAfter(LocalDate data);
-    List<Lucro> findByDataBefore(LocalDate data);
+    List<Lucro> findByPessoaAndDataBetween(Pessoa pessoa, LocalDate inicio, LocalDate fim);
+    List<Lucro> findByPessoaAndCategoria(Pessoa pessoa, Categoria categoria);
+    List<Lucro> findByPessoaAndDescricaoContaining(Pessoa pessoa, String descricao);
+    List<Lucro> findByPessoaAndValorGreaterThan(Pessoa pessoa, BigDecimal valor);
+    List<Lucro> findByPessoaAndDataAfter(Pessoa pessoa, LocalDate data);
+    List<Lucro> findByPessoaAndDataBefore(Pessoa pessoa, LocalDate data);
     @Query("SELECT SUM(l.valor) FROM Lucro l WHERE l.pessoa = :pessoa AND l.data BETWEEN :inicio AND :fim")
     BigDecimal findSumValorByPessoaAndDataBetween(@Param("pessoa") Pessoa pessoa, @Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
 }

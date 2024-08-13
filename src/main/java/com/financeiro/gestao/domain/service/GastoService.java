@@ -26,118 +26,169 @@ public class GastoService {
     @Autowired
     private UserDetailsServiceImpl userDetailsServiceImpl;
 
+    private Pessoa getLoggedPessoa() {
+        return userDetailsServiceImpl.userConnected();
+    }
+
     @Transactional(readOnly = true)
     public List<GastoDTO> findAll() {
-        return gastoRepository.findAll()
-                .stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
+        try {
+            return gastoRepository.findAll()
+                    .stream()
+                    .map(EntityToDTOConverter::convertToDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar todos os gastos: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public Optional<GastoDTO> findById(Long id) {
-        return gastoRepository.findById(id)
-                .map(EntityToDTOConverter::convertToDTO);
+        try {
+            return gastoRepository.findById(id)
+                    .map(EntityToDTOConverter::convertToDTO);
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar gasto com ID: " + id + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
-    public List<GastoDTO> findByPessoa(Pessoa pessoa) {
-        return gastoRepository.findByPessoa(pessoa)
-                .stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
+    public List<GastoDTO> findByPessoa() {
+        try {
+            return gastoRepository.findByPessoa(getLoggedPessoa())
+                    .stream()
+                    .map(EntityToDTOConverter::convertToDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao usuário logado: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public List<GastoDTO> findByDataBetween(LocalDate inicio, LocalDate fim) {
-        return gastoRepository.findByDataBetween(inicio, fim)
-                .stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public List<GastoDTO> findByCategoria(Categoria categoria) {
-        return gastoRepository.findByCategoria(categoria)
-                .stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
+        try {
+            return gastoRepository.findByPessoaAndDataBetween(getLoggedPessoa(), inicio, fim)
+                    .stream()
+                    .map(EntityToDTOConverter::convertToDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar gastos entre as datas " + inicio + " e " + fim + ": " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public List<GastoDTO> findByDescricaoContaining(String descricao) {
-        return gastoRepository.findByDescricaoContaining(descricao)
-                .stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
+        try {
+            return gastoRepository.findByPessoaAndDescricaoContaining(getLoggedPessoa(), descricao)
+                    .stream()
+                    .map(EntityToDTOConverter::convertToDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar gastos com descrição contendo: " + descricao + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public List<GastoDTO> findByValorGreaterThan(BigDecimal valor) {
-        return gastoRepository.findByValorGreaterThan(valor)
-                .stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
+        try {
+            return gastoRepository.findByPessoaAndValorGreaterThan(getLoggedPessoa(), valor)
+                    .stream()
+                    .map(EntityToDTOConverter::convertToDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar gastos com valor maior que " + valor + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
-    public List<GastoDTO> findByPessoaAndCategoria(Pessoa pessoa, Categoria categoria) {
-        return gastoRepository.findByPessoaAndCategoria(pessoa, categoria)
-                .stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
+    public List<GastoDTO> findByPessoaAndCategoria(Categoria categoria) {
+        try {
+            return gastoRepository.findByPessoaAndCategoria(getLoggedPessoa(), categoria)
+                    .stream()
+                    .map(EntityToDTOConverter::convertToDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar gastos da categoria: " + categoria.getNome() + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public List<GastoDTO> findByDataAfter(LocalDate data) {
-        return gastoRepository.findByDataAfter(data)
-                .stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
+        try {
+            return gastoRepository.findByPessoaAndDataAfter(getLoggedPessoa(), data)
+                    .stream()
+                    .map(EntityToDTOConverter::convertToDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar gastos após a data: " + data + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public List<GastoDTO> findByDataBefore(LocalDate data) {
-        return gastoRepository.findByDataBefore(data)
-                .stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
+        try {
+            return gastoRepository.findByPessoaAndDataBefore(getLoggedPessoa(), data)
+                    .stream()
+                    .map(EntityToDTOConverter::convertToDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao buscar gastos antes da data: " + data + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
     public BigDecimal findSumValorByPessoaAndDataBetween(LocalDate inicio, LocalDate fim) {
-        Pessoa pessoa = userDetailsServiceImpl.userConnected();
-        return gastoRepository.findSumValorByPessoaAndDataBetween(pessoa, inicio, fim);
+        try {
+            return gastoRepository.findSumValorByPessoaAndDataBetween(getLoggedPessoa(), inicio, fim);
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao somar os valores dos gastos entre as datas " + inicio + " e " + fim + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional
     public Gasto save(Gasto gasto) {
-        validarGasto(gasto);
-        return gastoRepository.save(gasto);
+        try {
+            validarGasto(gasto);
+            return gastoRepository.save(gasto);
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao salvar o gasto: " + e.getMessage());
+        }
     }
 
     @Transactional
     public Gasto update(Long id, Gasto gastoAtualizado) {
-        Gasto gasto = gastoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Gasto não encontrado com o ID: " + id));
+        try {
+            Gasto gasto = gastoRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Gasto não encontrado com o ID: " + id));
 
-        gasto.setDescricao(gastoAtualizado.getDescricao());
-        gasto.setValor(gastoAtualizado.getValor());
-        gasto.setData(gastoAtualizado.getData());
-        gasto.setCategoria(gastoAtualizado.getCategoria());
-        gasto.setPessoa(gastoAtualizado.getPessoa());
+            gasto.setDescricao(gastoAtualizado.getDescricao());
+            gasto.setValor(gastoAtualizado.getValor());
+            gasto.setData(gastoAtualizado.getData());
+            gasto.setCategoria(gastoAtualizado.getCategoria());
+            gasto.setPessoa(gastoAtualizado.getPessoa());
 
-        validarGasto(gasto);
+            validarGasto(gasto);
 
-        return gastoRepository.save(gasto);
+            return gastoRepository.save(gasto);
+        } catch (ResourceNotFoundException e) {
+            throw e; // Re-lança a exceção de recurso não encontrado
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao atualizar o gasto com ID: " + id + ". Detalhes: " + e.getMessage());
+        }
     }
 
     @Transactional
     public void delete(Long id) {
-        if (!gastoRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Gasto não encontrado com o ID: " + id);
+        try {
+            if (!gastoRepository.existsById(id)) {
+                throw new ResourceNotFoundException("Gasto não encontrado com o ID: " + id);
+            }
+            gastoRepository.deleteById(id);
+        } catch (ResourceNotFoundException e) {
+            throw e; // Re-lança a exceção de recurso não encontrado
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao excluir o gasto com ID: " + id + ". Detalhes: " + e.getMessage());
         }
-        gastoRepository.deleteById(id);
     }
 
     private void validarGasto(Gasto gasto) {

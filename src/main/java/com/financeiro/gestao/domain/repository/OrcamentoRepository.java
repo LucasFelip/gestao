@@ -12,8 +12,8 @@ import java.util.List;
 @Repository
 public interface OrcamentoRepository extends JpaRepository<Orcamento, Long> {
     List<Orcamento> findByPessoa(Pessoa pessoa);
-    List<Orcamento> findByDataInicioBetweenOrDataFimBetween(LocalDate inicioStart, LocalDate inicioEnd, LocalDate fimStart, LocalDate fimEnd);
-    List<Orcamento> findByLimiteGreaterThan(BigDecimal limite);
+    List<Orcamento> findByPessoaAndDataInicioBetweenOrDataFimBetween(Pessoa pessoa, LocalDate inicioStart, LocalDate inicioEnd, LocalDate fimStart, LocalDate fimEnd);
+    List<Orcamento> findByPessoaAndLimiteGreaterThan(Pessoa pessoa, BigDecimal limite);
     List<Orcamento> findByPessoaAndDataFimAfter(Pessoa pessoa, LocalDate hoje);
     List<Orcamento> findByPessoaAndDataInicioBeforeAndDataFimAfter(Pessoa pessoa, LocalDate inicio, LocalDate fim);
 }

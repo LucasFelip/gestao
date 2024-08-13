@@ -42,9 +42,9 @@ public class LucroController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/pessoa/{pessoaId}")
-    public ResponseEntity<List<LucroDTO>> findByPessoaId(@PathVariable Pessoa pessoa) {
-        List<LucroDTO> lucros = lucroService.findByPessoa(pessoa);
+    @GetMapping("/pessoa")
+    public ResponseEntity<List<LucroDTO>> findByPessoa() {
+        List<LucroDTO> lucros = lucroService.findByPessoa();
         return ResponseEntity.ok(lucros);
     }
 
@@ -54,8 +54,8 @@ public class LucroController {
         return ResponseEntity.ok(lucros);
     }
 
-    @GetMapping("/categoria/{categoriaId}")
-    public ResponseEntity<List<LucroDTO>> findByCategoriaId(@PathVariable Categoria categoria) {
+    @GetMapping("/categoria/{categoria}")
+    public ResponseEntity<List<LucroDTO>> findByCategoria(@PathVariable Categoria categoria) {
         List<LucroDTO> lucros = lucroService.findByCategoria(categoria);
         return ResponseEntity.ok(lucros);
     }
@@ -69,12 +69,6 @@ public class LucroController {
     @GetMapping("/valor")
     public ResponseEntity<List<LucroDTO>> findByValorGreaterThan(@RequestParam BigDecimal valor) {
         List<LucroDTO> lucros = lucroService.findByValorGreaterThan(valor);
-        return ResponseEntity.ok(lucros);
-    }
-
-    @GetMapping("/pessoa/{pessoaId}/categoria/{categoriaId}")
-    public ResponseEntity<List<LucroDTO>> findByPessoaIdAndCategoriaId(@PathVariable Long pessoaId, @PathVariable Long categoriaId) {
-        List<LucroDTO> lucros = lucroService.findByPessoaIdAndCategoriaId(pessoaId, categoriaId);
         return ResponseEntity.ok(lucros);
     }
 

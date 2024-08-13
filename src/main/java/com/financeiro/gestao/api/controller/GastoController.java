@@ -42,21 +42,15 @@ public class GastoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/pessoa/{pessoaId}")
-    public ResponseEntity<List<GastoDTO>> findByPessoaId(@PathVariable Pessoa pessoa) {
-        List<GastoDTO> gastos = gastoService.findByPessoa(pessoa);
+    @GetMapping("/pessoa")
+    public ResponseEntity<List<GastoDTO>> findByPessoaId() {
+        List<GastoDTO> gastos = gastoService.findByPessoa();
         return ResponseEntity.ok(gastos);
     }
 
     @GetMapping("/data")
     public ResponseEntity<List<GastoDTO>> findByDataBetween(@RequestParam LocalDate inicio, @RequestParam LocalDate fim) {
         List<GastoDTO> gastos = gastoService.findByDataBetween(inicio, fim);
-        return ResponseEntity.ok(gastos);
-    }
-
-    @GetMapping("/categoria/{categoriaId}")
-    public ResponseEntity<List<GastoDTO>> findByCategoriaId(@PathVariable Categoria categoria) {
-        List<GastoDTO> gastos = gastoService.findByCategoria(categoria);
         return ResponseEntity.ok(gastos);
     }
 
@@ -72,9 +66,9 @@ public class GastoController {
         return ResponseEntity.ok(gastos);
     }
 
-    @GetMapping("/pessoa/{pessoaId}/categoria/{categoriaId}")
-    public ResponseEntity<List<GastoDTO>> findByPessoaIdAndCategoriaId(@PathVariable Pessoa pessoa, @PathVariable Categoria categoria) {
-        List<GastoDTO> gastos = gastoService.findByPessoaAndCategoria(pessoa, categoria);
+    @GetMapping("/pessoa/categoria/{categoriaId}")
+    public ResponseEntity<List<GastoDTO>> findByPessoaAndCategoria(@PathVariable Categoria categoria) {
+        List<GastoDTO> gastos = gastoService.findByPessoaAndCategoria(categoria);
         return ResponseEntity.ok(gastos);
     }
 
