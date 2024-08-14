@@ -52,6 +52,7 @@ export function submitOrcamentoForm(event) {
     submitForm('/orcamentos/register', formData, 'Orçamento cadastrado com sucesso!')
         .then(data => {
             alert('Orçamento cadastrado com sucesso!');
+            location.reload();
         })
         .catch(error => {
             alert(`Erro ao cadastrar orçamento: ${error.message}`);
