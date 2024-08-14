@@ -62,4 +62,32 @@ public class ReportService {
             throw new BusinessRuleException("Erro ao calcular saldo no período de " + inicio + " a " + fim + ". Detalhes: " + e.getMessage());
         }
     }
+
+    // Novos métodos para calcular com base no orçamento ativo
+    @Transactional(readOnly = true)
+    public BigDecimal calculateTotalGastosByOrcamentoAtivo() {
+        try {
+            return reportRepository.calculateTotalGastosByPessoaAndOrcamentoAtivo(getLoggedPessoa());
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao calcular total de gastos com base no orçamento ativo. Detalhes: " + e.getMessage());
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public BigDecimal calculateTotalLucrosByOrcamentoAtivo() {
+        try {
+            return reportRepository.calculateTotalLucrosByPessoaAndOrcamentoAtivo(getLoggedPessoa());
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao calcular total de lucros com base no orçamento ativo. Detalhes: " + e.getMessage());
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public BigDecimal calculateSaldoByOrcamentoAtivo() {
+        try {
+            return reportRepository.calculateSaldoByPessoaAndOrcamentoAtivo(getLoggedPessoa());
+        } catch (Exception e) {
+            throw new BusinessRuleException("Erro ao calcular saldo com base no orçamento ativo. Detalhes: " + e.getMessage());
+        }
+    }
 }

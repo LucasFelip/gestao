@@ -2,6 +2,7 @@ package com.financeiro.gestao.domain.repository.impl;
 
 import com.financeiro.gestao.domain.model.Gasto;
 import com.financeiro.gestao.domain.model.Lucro;
+import com.financeiro.gestao.domain.model.Orcamento;
 import com.financeiro.gestao.domain.model.Pessoa;
 import com.financeiro.gestao.domain.repository.ReportRepository;
 import jakarta.persistence.EntityManager;
@@ -59,5 +60,48 @@ public class ReportRepositoryImpl implements ReportRepository {
                 .getSingleResult();
 
         return totalLucros.subtract(totalGastos);
+    }
+
+    @Override
+    public BigDecimal calculateTotalGastosByPessoaAndOrcamentoAtivo(Pessoa pessoa) {
+        TypedQuery<BigDecimal> query = entityManager.createQuery(
+                "SELECT COALESCE(SUM(g.valor), 0) FROM Gasto g WHERE g.pessoa = :pessoa AND g.data BETWEEN :inicio AND :fim",
+                BigDecimal.class);
+
+        Orcamento orcamentoAtivo = getOrcamentoAtivo(pessoa);
+        query.setParameter("pessoa", pessoa);
+        query.setParameter("inicio", orcamentoAtivo.getDataInicio());
+        query.setParameter("fim", orcamentoAtivo.getDataFim());
+
+        return query.getSingleResult();
+    }
+
+    @Override
+    public BigDecimal calculateTotalLucrosByPessoaAndOrcamentoAtivo(Pessoa pessoa) {
+        TypedQuery<BigDecimal> query = entityManager.createQuery(
+                "SELECT COALESCE(SUM(l.valor), 0) FROM Lucro l WHERE l.pessoa = :pessoa AND l.data BETWEEN :inicio AND :fim",
+                BigDecimal.class);
+
+        Orcamento orcamentoAtivo = getOrcamentoAtivo(pessoa);
+        query.setParameter("pessoa", pessoa);
+        query.setParameter("inicio", orcamentoAtivo.getDataInicio());
+        query.setParameter("fim", orcamentoAtivo.getDataFim());
+
+        return query.getSingleResult();
+    }
+
+    @Override
+    public BigDecimal calculateSaldoByPessoaAndOrcamentoAtivo(Pessoa pessoa) {
+        BigDecimal totalGastos = calculateTotalGastosByPessoaAndOrcamentoAtivo(pessoa);
+        BigDecimal totalLucros = calculateTotalLucrosByPessoaAndOrcamentoAtivo(pessoa);
+        return totalLucros.subtract(totalGastos);
+    }
+
+    private Orcamento getOrcamentoAtivo(Pessoa pessoa) {
+        TypedQuery<Orcamento> query = entityManager.createQuery(
+                "SELECT o FROM Orcamento o WHERE o.pessoa = :pessoa AND o.ativo = true",
+                Orcamento.class);
+        query.setParameter("pessoa", pessoa);
+        return query.getSingleResult();
     }
 }

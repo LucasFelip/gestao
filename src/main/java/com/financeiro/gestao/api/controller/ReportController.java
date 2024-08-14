@@ -45,4 +45,22 @@ public class ReportController {
         BigDecimal saldo = reportService.calculateSaldoByPessoaAndPeriodo(inicio, fim);
         return ResponseEntity.ok(saldo);
     }
+
+    @GetMapping("/gastos/ativo")
+    public ResponseEntity<BigDecimal> calculateTotalGastosByOrcamentoAtivo() {
+        BigDecimal totalGastos = reportService.calculateTotalGastosByOrcamentoAtivo();
+        return ResponseEntity.ok(totalGastos);
+    }
+
+    @GetMapping("/lucros/ativo")
+    public ResponseEntity<BigDecimal> calculateTotalLucrosByOrcamentoAtivo() {
+        BigDecimal totalLucros = reportService.calculateTotalLucrosByOrcamentoAtivo();
+        return ResponseEntity.ok(totalLucros);
+    }
+
+    @GetMapping("/saldo/ativo")
+    public ResponseEntity<BigDecimal> calculateSaldoByOrcamentoAtivo() {
+        BigDecimal saldo = reportService.calculateSaldoByOrcamentoAtivo();
+        return ResponseEntity.ok(saldo);
+    }
 }

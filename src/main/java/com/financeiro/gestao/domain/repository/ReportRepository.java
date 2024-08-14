@@ -14,4 +14,7 @@ public interface ReportRepository {
     List<Gasto> findGastosByPessoaAndPeriodo(Pessoa pessoa, LocalDate inicio, LocalDate fim);
     List<Lucro> findLucrosByPessoaAndPeriodo(Pessoa pessoa, LocalDate inicio, LocalDate fim);
     BigDecimal calculateSaldoByPessoaAndPeriodo(Pessoa pessoa, LocalDate inicio, LocalDate fim);
+    BigDecimal calculateTotalGastosByPessoaAndOrcamentoAtivo(Pessoa pessoa);
+    BigDecimal calculateTotalLucrosByPessoaAndOrcamentoAtivo(Pessoa pessoa);
+    BigDecimal calculateSaldoByPessoaAndOrcamentoAtivo(Pessoa pessoa);
 }
