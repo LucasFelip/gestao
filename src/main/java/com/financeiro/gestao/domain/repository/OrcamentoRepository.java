@@ -16,4 +16,11 @@ public interface OrcamentoRepository extends JpaRepository<Orcamento, Long> {
     List<Orcamento> findByPessoaAndLimiteGreaterThan(Pessoa pessoa, BigDecimal limite);
     List<Orcamento> findByPessoaAndDataFimAfter(Pessoa pessoa, LocalDate hoje);
     List<Orcamento> findByPessoaAndDataInicioBeforeAndDataFimAfter(Pessoa pessoa, LocalDate inicio, LocalDate fim);
+    // Novos métodos para considerar orçamentos ativos
+    List<Orcamento> findByPessoaAndAtivoTrue(Pessoa pessoa);
+    List<Orcamento> findByPessoaAndAtivoFalse(Pessoa pessoa);
+    List<Orcamento> findByPessoaAndAtivoTrueAndDataInicioBetweenOrDataFimBetween(Pessoa pessoa, LocalDate inicioStart, LocalDate inicioEnd, LocalDate fimStart, LocalDate fimEnd);
+    List<Orcamento> findByPessoaAndAtivoTrueAndLimiteGreaterThan(Pessoa pessoa, BigDecimal limite);
+    List<Orcamento> findByPessoaAndAtivoTrueAndDataFimAfter(Pessoa pessoa, LocalDate hoje);
+    List<Orcamento> findByPessoaAndAtivoTrueAndDataInicioBeforeAndDataFimAfter(Pessoa pessoa, LocalDate inicio, LocalDate fim);
 }

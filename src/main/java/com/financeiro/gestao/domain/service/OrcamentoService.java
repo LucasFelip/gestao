@@ -55,67 +55,74 @@ public class OrcamentoService {
     @Transactional(readOnly = true)
     public List<OrcamentoDTO> findByPessoa() {
         try {
-            return orcamentoRepository.findByPessoa(getLoggedPessoa())
+            return orcamentoRepository.findByPessoaAndAtivoTrue(getLoggedPessoa())
                     .stream()
                     .map(EntityToDTOConverter::convertToDTO)
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            throw new BusinessRuleException("Erro ao buscar orçamentos do usuário logado: " + e.getMessage());
+            throw new BusinessRuleException("Erro ao buscar orçamentos ativos do usuário logado: " + e.getMessage());
         }
     }
 
     @Transactional(readOnly = true)
     public List<OrcamentoDTO> findByDataInicioBetweenOrDataFimBetween(LocalDate inicioStart, LocalDate inicioEnd, LocalDate fimStart, LocalDate fimEnd) {
         try {
-            return orcamentoRepository.findByPessoaAndDataInicioBetweenOrDataFimBetween(getLoggedPessoa(), inicioStart, inicioEnd, fimStart, fimEnd)
+            return orcamentoRepository.findByPessoaAndAtivoTrueAndDataInicioBetweenOrDataFimBetween(getLoggedPessoa(), inicioStart, inicioEnd, fimStart, fimEnd)
                     .stream()
                     .map(EntityToDTOConverter::convertToDTO)
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            throw new BusinessRuleException("Erro ao buscar orçamentos entre as datas de início ou fim especificadas: " + e.getMessage());
+            throw new BusinessRuleException("Erro ao buscar orçamentos ativos entre as datas de início ou fim especificadas: " + e.getMessage());
         }
     }
 
     @Transactional(readOnly = true)
     public List<OrcamentoDTO> findByLimiteGreaterThan(BigDecimal limite) {
         try {
-            return orcamentoRepository.findByPessoaAndLimiteGreaterThan(getLoggedPessoa(), limite)
+            return orcamentoRepository.findByPessoaAndAtivoTrueAndLimiteGreaterThan(getLoggedPessoa(), limite)
                     .stream()
                     .map(EntityToDTOConverter::convertToDTO)
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            throw new BusinessRuleException("Erro ao buscar orçamentos com limite maior que " + limite + ". Detalhes: " + e.getMessage());
+            throw new BusinessRuleException("Erro ao buscar orçamentos ativos com limite maior que " + limite + ". Detalhes: " + e.getMessage());
         }
     }
 
     @Transactional(readOnly = true)
     public List<OrcamentoDTO> findByPessoaAndDataFimAfter(LocalDate hoje) {
         try {
-            return orcamentoRepository.findByPessoaAndDataFimAfter(getLoggedPessoa(), hoje)
+            return orcamentoRepository.findByPessoaAndAtivoTrueAndDataFimAfter(getLoggedPessoa(), hoje)
                     .stream()
                     .map(EntityToDTOConverter::convertToDTO)
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            throw new BusinessRuleException("Erro ao buscar orçamentos com data de fim após " + hoje + ". Detalhes: " + e.getMessage());
+            throw new BusinessRuleException("Erro ao buscar orçamentos ativos com data de fim após " + hoje + ". Detalhes: " + e.getMessage());
         }
     }
 
     @Transactional(readOnly = true)
     public List<OrcamentoDTO> findByPessoaAndDataInicioBeforeAndDataFimAfter(LocalDate inicio, LocalDate fim) {
         try {
-            return orcamentoRepository.findByPessoaAndDataInicioBeforeAndDataFimAfter(getLoggedPessoa(), inicio, fim)
+            return orcamentoRepository.findByPessoaAndAtivoTrueAndDataInicioBeforeAndDataFimAfter(getLoggedPessoa(), inicio, fim)
                     .stream()
                     .map(EntityToDTOConverter::convertToDTO)
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            throw new BusinessRuleException("Erro ao buscar orçamentos com data de início antes de " + inicio + " e data de fim depois de " + fim + ". Detalhes: " + e.getMessage());
+            throw new BusinessRuleException("Erro ao buscar orçamentos ativos com data de início antes de " + inicio + " e data de fim depois de " + fim + ". Detalhes: " + e.getMessage());
         }
     }
 
     @Transactional
     public Orcamento save(Orcamento orcamento) {
         try {
+            Pessoa pessoa = getLoggedPessoa();
             orcamento.setPessoa(getLoggedPessoa());
+
+            List<Orcamento> orcamentosAtivos = orcamentoRepository.findByPessoaAndAtivoTrue(pessoa);
+            orcamentosAtivos.forEach(o -> o.setAtivo(false));
+            orcamentoRepository.saveAll(orcamentosAtivos);
+
+            orcamento.setAtivo(true);
             validarOrcamento(orcamento);
             return orcamentoRepository.save(orcamento);
         } catch (Exception e) {
@@ -129,16 +136,21 @@ public class OrcamentoService {
             Orcamento orcamento = orcamentoRepository.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException("Orçamento não encontrado com o ID: " + id));
 
+            List<Orcamento> orcamentosAtivos = orcamentoRepository.findByPessoaAndAtivoTrue(orcamento.getPessoa());
+            orcamentosAtivos.forEach(o -> o.setAtivo(false));
+            orcamentoRepository.saveAll(orcamentosAtivos);
+
             orcamento.setDataInicio(orcamentoAtualizado.getDataInicio());
             orcamento.setDataFim(orcamentoAtualizado.getDataFim());
             orcamento.setLimite(orcamentoAtualizado.getLimite());
             orcamento.setPessoa(orcamentoAtualizado.getPessoa());
+            orcamento.setAtivo(true);
 
             validarOrcamento(orcamento);
 
             return orcamentoRepository.save(orcamento);
         } catch (ResourceNotFoundException e) {
-            throw e; // Re-lança a exceção de recurso não encontrado
+            throw e;
         } catch (Exception e) {
             throw new BusinessRuleException("Erro ao atualizar o orçamento com ID: " + id + ". Detalhes: " + e.getMessage());
         }
@@ -152,7 +164,7 @@ public class OrcamentoService {
             }
             orcamentoRepository.deleteById(id);
         } catch (ResourceNotFoundException e) {
-            throw e; // Re-lança a exceção de recurso não encontrado
+            throw e;
         } catch (Exception e) {
             throw new BusinessRuleException("Erro ao excluir o orçamento com ID: " + id + ". Detalhes: " + e.getMessage());
         }

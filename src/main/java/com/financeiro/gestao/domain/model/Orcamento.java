@@ -23,4 +23,17 @@ public class Orcamento {
     private LocalDate dataInicio;
     private LocalDate dataFim;
     private BigDecimal limite;
+    @Column(nullable = false)
+    private boolean ativo;
+
+    public void setAtivo(boolean ativo) {
+        if (ativo && this.pessoa != null) {
+            this.pessoa.getOrcamentos().forEach(orcamento -> {
+                if (orcamento.isAtivo()) {
+                    orcamento.setAtivo(false);
+                }
+            });
+        }
+        this.ativo = ativo;
+    }
 }
