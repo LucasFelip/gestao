@@ -22,7 +22,6 @@ public class Orcamento {
     private PlanoOrcamentario planoOrcamentario;
 
     private BigDecimal valorPrevisto;
-    private BigDecimal valorRealizado;
 
     @ManyToOne
     @JoinColumn(name = "categoria_id")
