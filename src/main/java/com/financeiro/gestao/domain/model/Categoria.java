@@ -15,8 +15,14 @@ public class Categoria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String nome;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TipoCategoria tipoCategoria;
+
+    @ManyToOne
+    @JoinColumn(name = "categoria_pai_id")
+    private Categoria categoriaPai;  // Para subcategorias
 }

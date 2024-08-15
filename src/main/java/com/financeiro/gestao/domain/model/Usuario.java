@@ -11,8 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(name = "Pessoa")
-public class Pessoa {
+@Table(name = "usuario")
+public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,12 +21,13 @@ public class Pessoa {
     private String email;
     private String senha;
     private String telefone;
+
     @Enumerated(EnumType.STRING)
-    private Role roles = Role.USER;
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "pessoa")
-    private List<Gasto> gastos;
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "pessoa")
-    private List<Lucro> lucros;
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "pessoa")
-    private List<Orcamento> orcamentos;
+    private Role role = Role.USER;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
+    private List<TransacaoFinanceira> transacoes;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
+    private List<PlanoOrcamentario> planosOrcamentarios;
 }

@@ -4,7 +4,6 @@ import lombok.*;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Entity
 @Data
@@ -17,23 +16,15 @@ public class Orcamento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "pessoa_id")
-    private Pessoa pessoa;
-    private LocalDate dataInicio;
-    private LocalDate dataFim;
-    private BigDecimal limite;
-    @Column(nullable = false)
-    private boolean ativo;
 
-    public void setAtivo(boolean ativo) {
-        if (ativo && this.pessoa != null) {
-            this.pessoa.getOrcamentos().forEach(orcamento -> {
-                if (orcamento.isAtivo()) {
-                    orcamento.setAtivo(false);
-                }
-            });
-        }
-        this.ativo = ativo;
-    }
+    @ManyToOne
+    @JoinColumn(name = "plano_orcamentario_id")
+    private PlanoOrcamentario planoOrcamentario;
+
+    private BigDecimal valorPrevisto;
+    private BigDecimal valorRealizado;
+
+    @ManyToOne
+    @JoinColumn(name = "categoria_id")
+    private Categoria categoria;
 }
