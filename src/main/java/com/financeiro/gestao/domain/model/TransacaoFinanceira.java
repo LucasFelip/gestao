@@ -36,11 +36,23 @@ public class TransacaoFinanceira {
     @Column(nullable = false)
     private TipoTransacao tipoTransacao;
 
-    public void validarTransacao(TransacaoFinanceira transacao) {
-        if (transacao.getValor().compareTo(BigDecimal.ZERO) <= 0) {
+    @PrePersist
+    @PreUpdate
+    public void aoRegistrarTransacao() {
+        if (tipoTransacao == TipoTransacao.DESPESA) {
+            for (PlanoOrcamentario plano : usuario.getPlanosOrcamentarios()) {
+                if (!data.isBefore(plano.getDataInicio()) && !data.isAfter(plano.getDataFim())) {
+                    plano.verificarDesativacaoOrcamento(this);
+                }
+            }
+        }
+    }
+
+    public void validarTransacao() {
+        if (valor.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("O valor da transação deve ser positivo.");
         }
-        if (transacao.getData().isAfter(LocalDate.now())) {
+        if (data.isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("A data da transação não pode ser no futuro.");
         }
     }

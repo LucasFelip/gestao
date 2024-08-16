@@ -23,7 +23,13 @@ public class Orcamento {
 
     private BigDecimal valorPrevisto;
 
+    private boolean ativo = true;
+
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
+
+    public void desativar() {
+        this.ativo = false;
+    }
 }

@@ -34,6 +34,8 @@ public class PlanoOrcamentario {
     private BigDecimal valorReceita;
     private BigDecimal valorRealizado;
 
+    private boolean ativo = true;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "planoOrcamentario")
     private List<Orcamento> orcamentos;
 
@@ -43,6 +45,8 @@ public class PlanoOrcamentario {
     @PrePersist
     @PreUpdate
     public void calcularValores() {
+        if (!ativo) return;
+
         valorPrevisto = orcamentos.stream()
                 .map(Orcamento::getValorPrevisto)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -63,6 +67,28 @@ public class PlanoOrcamentario {
     }
 
     public BigDecimal calcularImpactoLucro() {
+        if (!ativo) return BigDecimal.ZERO;
         return valorRealizado.subtract(valorPrevisto);
+    }
+
+    public void desativarPlano() {
+        this.ativo = false;
+    }
+
+    public void verificarDesativacaoOrcamento(TransacaoFinanceira transacao) {
+        for (Orcamento orcamento : orcamentos) {
+            if (orcamento.isAtivo() && orcamento.getCategoria().equals(transacao.getCategoria())) {
+                BigDecimal totalDespesasCategoria = transacoes.stream()
+                        .filter(t -> t.getCategoria().equals(orcamento.getCategoria()) &&
+                                t.getTipoTransacao() == TipoTransacao.DESPESA &&
+                                !t.getData().isBefore(dataInicio) && !t.getData().isAfter(dataFim))
+                        .map(TransacaoFinanceira::getValor)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                if (totalDespesasCategoria.compareTo(orcamento.getValorPrevisto()) >= 0) {
+                    orcamento.desativar();
+                }
+            }
+        }
     }
 }
