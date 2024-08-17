@@ -15,5 +15,7 @@ public interface PlanoOrcamentarioRepository extends JpaRepository<PlanoOrcament
     Optional<PlanoOrcamentario> findByUsuarioAndId(Usuario usuario, Long id);
     List<PlanoOrcamentario> findByUsuarioAndAtivoTrue(Usuario usuario);
     List<PlanoOrcamentario> findByUsuarioAndDataInicioGreaterThanEqualAndDataFimLessThanEqual(Usuario usuario, LocalDate dataInicio, LocalDate dataFim);
-
+    List<PlanoOrcamentario> findByUsuarioAndAtivoTrueAndDataInicioGreaterThanEqualAndDataFimLessThanEqual(
+            Usuario usuario, LocalDate dataInicio, LocalDate dataFim);
+    List<PlanoOrcamentario> findByUsuarioAndNomeContaining(Usuario usuario, String nome);
 }
