@@ -1,94 +1,65 @@
 package com.financeiro.gestao.api.controller;
 
-import com.financeiro.gestao.api.dto.OrcamentoDTO;
 import com.financeiro.gestao.domain.model.Orcamento;
-import com.financeiro.gestao.domain.model.Pessoa;
+import com.financeiro.gestao.domain.model.Categoria;
 import com.financeiro.gestao.domain.service.OrcamentoService;
-import com.financeiro.gestao.util.EntityToDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
-@RestController
-@RequestMapping("/orcamentos")
+@Controller
+@RequestMapping("/api/orcamentos")
 public class OrcamentoController {
 
-    private final OrcamentoService orcamentoService;
-
     @Autowired
-    public OrcamentoController(OrcamentoService orcamentoService) {
-        this.orcamentoService = orcamentoService;
-    }
-
-    @GetMapping
-    public ResponseEntity<List<OrcamentoDTO>> findAll() {
-        List<OrcamentoDTO> orcamentos = orcamentoService.findAll();
-        return ResponseEntity.ok(orcamentos);
-    }
+    private OrcamentoService orcamentoService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrcamentoDTO> findById(@PathVariable Long id) {
-        return orcamentoService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Orcamento> getOrcamentoById(@PathVariable Long id) {
+        Orcamento orcamento = orcamentoService.findById(id);
+        return ResponseEntity.ok(orcamento);
     }
 
-    @GetMapping("/pessoa")
-    public ResponseEntity<List<OrcamentoDTO>> findByPessoaId() {
-        List<OrcamentoDTO> orcamentos = orcamentoService.findByPessoa();
+    @GetMapping("/plano/{planoOrcamentarioId}")
+    public ResponseEntity<List<Orcamento>> getOrcamentosByPlanoOrcamentario(@PathVariable Long planoOrcamentarioId) {
+        List<Orcamento> orcamentos = orcamentoService.findAllByPlanoOrcamentario(planoOrcamentarioId);
         return ResponseEntity.ok(orcamentos);
     }
 
-    @GetMapping("/data")
-    public ResponseEntity<List<OrcamentoDTO>> findByDataInicioBetweenOrDataFimBetween(
-            @RequestParam LocalDate inicioStart,
-            @RequestParam LocalDate inicioEnd,
-            @RequestParam LocalDate fimStart,
-            @RequestParam LocalDate fimEnd) {
-        List<OrcamentoDTO> orcamentos = orcamentoService.findByDataInicioBetweenOrDataFimBetween(inicioStart, inicioEnd, fimStart, fimEnd);
+    @GetMapping("/plano/{planoOrcamentarioId}/ativos")
+    public ResponseEntity<List<Orcamento>> getOrcamentosAtivosByPlanoOrcamentario(@PathVariable Long planoOrcamentarioId) {
+        List<Orcamento> orcamentos = orcamentoService.findByPlanoOrcamentarioAndAtivoTrue(planoOrcamentarioId);
         return ResponseEntity.ok(orcamentos);
     }
 
-    @GetMapping("/limite")
-    public ResponseEntity<List<OrcamentoDTO>> findByLimiteGreaterThan(@RequestParam BigDecimal limite) {
-        List<OrcamentoDTO> orcamentos = orcamentoService.findByLimiteGreaterThan(limite);
+    @GetMapping("/categoria/{categoriaId}")
+    public ResponseEntity<List<Orcamento>> getOrcamentosByCategoria(@PathVariable Categoria categoria) {
+        List<Orcamento> orcamentos = orcamentoService.findByCategoria(categoria);
         return ResponseEntity.ok(orcamentos);
     }
 
-    @GetMapping("/pessoa/data-fim")
-    public ResponseEntity<List<OrcamentoDTO>> findByPessoaAndDataFimAfter(@RequestParam LocalDate hoje) {
-        List<OrcamentoDTO> orcamentos = orcamentoService.findByPessoaAndDataFimAfter(hoje);
+    @GetMapping("/categoria/{categoriaId}/ativos")
+    public ResponseEntity<List<Orcamento>> getOrcamentosAtivosByCategoria(@PathVariable Categoria categoria) {
+        List<Orcamento> orcamentos = orcamentoService.findByCategoriaAndAtivoTrue(categoria);
         return ResponseEntity.ok(orcamentos);
     }
 
-    @GetMapping("/pessoa/data-inicio-fim")
-    public ResponseEntity<List<OrcamentoDTO>> findByPessoaAndDataInicioBeforeAndDataFimAfter(@RequestParam LocalDate inicio, @RequestParam LocalDate fim) {
-        List<OrcamentoDTO> orcamentos = orcamentoService.findByPessoaAndDataInicioBeforeAndDataFimAfter(inicio, fim);
-        return ResponseEntity.ok(orcamentos);
+    @PostMapping("/plano/{planoOrcamentarioId}")
+    public ResponseEntity<Orcamento> createOrcamento(
+            @PathVariable Long planoOrcamentarioId,
+            @RequestBody Orcamento orcamento) {
+        Orcamento novoOrcamento = orcamentoService.createOrcamento(planoOrcamentarioId, orcamento);
+        return ResponseEntity.ok(novoOrcamento);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<OrcamentoDTO> save(@RequestBody Orcamento orcamento) {
-        Orcamento savedOrcamento = orcamentoService.save(orcamento);
-        OrcamentoDTO orcamentoDTO = EntityToDTOConverter.convertToDTO(savedOrcamento);
-        return ResponseEntity.status(HttpStatus.CREATED).body(orcamentoDTO);
-    }
-
-    @PutMapping("/atualizar/{id}")
-    public ResponseEntity<OrcamentoDTO> update(@PathVariable Long id, @RequestBody Orcamento orcamentoAtualizado) {
-        Orcamento updatedOrcamento = orcamentoService.update(id, orcamentoAtualizado);
-        OrcamentoDTO orcamentoDTO = EntityToDTOConverter.convertToDTO(updatedOrcamento);
-        return ResponseEntity.ok(orcamentoDTO);
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        orcamentoService.delete(id);
-        return ResponseEntity.noContent().build();
+    @PutMapping("/{id}")
+    public ResponseEntity<Orcamento> updateOrcamento(
+            @PathVariable Long id,
+            @RequestBody Orcamento orcamento) {
+        Orcamento orcamentoAtualizado = orcamentoService.updateOrcamento(id, orcamento);
+        return ResponseEntity.ok(orcamentoAtualizado);
     }
 }
