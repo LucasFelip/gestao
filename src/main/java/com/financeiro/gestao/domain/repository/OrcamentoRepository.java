@@ -14,4 +14,5 @@ public interface OrcamentoRepository extends JpaRepository<Orcamento, Long> {
     List<Orcamento> findByPlanoOrcamentarioAndAtivoTrue(PlanoOrcamentario planoOrcamentario);
     List<Orcamento> findByCategoria(Categoria categoria);
     List<Orcamento> findByCategoriaAndAtivoTrue(Categoria categoria);
+    List<Orcamento> findByPlanoOrcamentarioAndCategoriaAndAtivoTrue(PlanoOrcamentario planoOrcamentario, Categoria categoria);
 }

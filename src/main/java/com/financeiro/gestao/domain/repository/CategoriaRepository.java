@@ -12,7 +12,6 @@ import java.util.List;
 @Repository
 public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
     Categoria findByNome(String nome);
-    boolean existsByNome(String nome);
     List<Categoria> findByNomeContaining(String nome);
     List<Categoria> findCategoriasByTipoCategoria(TipoCategoria tipoCategoria);
     Page<Categoria> findCategoriasByTipoCategoria(TipoCategoria tipoCategoria, Pageable pageable);
