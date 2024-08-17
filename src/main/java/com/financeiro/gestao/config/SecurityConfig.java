@@ -30,19 +30,19 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/auth/**", "/css/**", "/js/**").permitAll()
+                                .requestMatchers("/css/**", "/js/**", "/api-docs", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(formLogin ->
                         formLogin
-                                .loginPage("/auth/login")
+                                .loginPage("/login")
                                 .defaultSuccessUrl("/home", true)
                                 .permitAll()
                 )
                 .logout(logout ->
                         logout
-                                .logoutUrl("/auth/logout")
-                                .logoutSuccessUrl("/auth/login")
+                                .logoutUrl("/logout")
+                                .logoutSuccessUrl("/login")
                                 .permitAll()
                 )
                 .userDetailsService(userDetailsService)

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping
 public class AuthController {
 
     @Autowired
@@ -26,6 +26,12 @@ public class AuthController {
     public ModelAndView register() {
         return new ModelAndView("register");
     }
+
+    @GetMapping("/home")
+    public ModelAndView home() {
+        return new ModelAndView("home");
+    }
+
 
     @GetMapping("/logout")
     public ModelAndView logout() {
