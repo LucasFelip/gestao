@@ -5,7 +5,6 @@ import com.financeiro.gestao.domain.model.TransacaoFinanceira;
 import com.financeiro.gestao.domain.service.TransacaoFinanceiraService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -56,9 +55,11 @@ public class TransacaoFinanceiraController {
         return ResponseEntity.ok(soma);
     }
 
-    @GetMapping("/page")
-    public ResponseEntity<Page<TransacaoFinanceira>> getTransacoesFinanceirasPageable(Pageable pageable) {
-        Page<TransacaoFinanceira> transacoesFinanceiras = transacaoFinanceiraService.findByUsuarioPageable(pageable);
+    @GetMapping("/paginado")
+    public ResponseEntity<Page<TransacaoFinanceira>> getTransacoesFinanceirasPageable(
+            @RequestParam("page") int page,
+            @RequestParam("size") int size) {
+        Page<TransacaoFinanceira> transacoesFinanceiras = transacaoFinanceiraService.findByUsuarioPageable(page, size);
         return ResponseEntity.ok(transacoesFinanceiras);
     }
 
