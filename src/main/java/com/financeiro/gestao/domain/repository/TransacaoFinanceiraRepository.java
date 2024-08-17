@@ -19,7 +19,8 @@ public interface TransacaoFinanceiraRepository extends JpaRepository<TransacaoFi
     List<TransacaoFinanceira> findByUsuario(Usuario usuario);
     List<TransacaoFinanceira> findByUsuarioAndDataBetween(Usuario usuario, LocalDate startDate, LocalDate endDate);
     List<TransacaoFinanceira> findByUsuarioAndCategoria(Usuario usuario, Categoria categoria);
-    BigDecimal sumByUsuarioAndCategoriaAndDataBetween(Usuario usuario, Categoria categoria, LocalDate startDate, LocalDate endDate);
+    @Query("SELECT SUM(t.valor) FROM TransacaoFinanceira t WHERE t.usuario = :usuario AND t.categoria = :categoria AND t.data BETWEEN :startDate AND :endDate")
+    BigDecimal sumByUsuarioAndCategoriaAndDataBetween(@Param("usuario") Usuario usuario, @Param("categoria") Categoria categoria, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
     Page<TransacaoFinanceira> findByUsuario(Usuario usuario, Pageable pageable);
     @Query("SELECT t FROM TransacaoFinanceira t WHERE t.usuario = :usuario AND t.valor > :valorMinimo")
     List<TransacaoFinanceira> findTransacoesComValorMaiorQue(@Param("usuario") Usuario usuario, @Param("valorMinimo") BigDecimal valorMinimo);
