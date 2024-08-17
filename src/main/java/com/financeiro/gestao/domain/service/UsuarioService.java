@@ -96,7 +96,7 @@ public class UsuarioService {
     }
 
     public Usuario findByUsernameOrEmail(String username, String email) {
-        return usuarioRepository.findByUsernameOrEmail(username, email)
+        return usuarioRepository.findByNomeOrEmail(username, email)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com o username ou email: ", username + " / " + email));
     }
 }

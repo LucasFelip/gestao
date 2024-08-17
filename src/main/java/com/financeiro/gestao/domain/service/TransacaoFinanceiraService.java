@@ -7,7 +7,9 @@ import com.financeiro.gestao.domain.repository.TransacaoFinanceiraRepository;
 import com.financeiro.gestao.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,8 +63,9 @@ public class TransacaoFinanceiraService {
         return transacaoFinanceiraRepository.save(transacao);
     }
 
-    public Page<TransacaoFinanceira> findByUsuarioPageable(Pageable pageable) {
+    public Page<TransacaoFinanceira> findByUsuarioPageable(int page, int size) {
         Usuario currentUser = userDetailsService.userConnected();
+        Pageable pageable = PageRequest.of(page, size, Sort.by("descricao").ascending());
         return transacaoFinanceiraRepository.findByUsuario(currentUser, pageable);
     }
 
