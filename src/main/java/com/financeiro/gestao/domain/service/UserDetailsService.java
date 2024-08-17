@@ -18,24 +18,18 @@ public class UserDetailsService implements org.springframework.security.core.use
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        try {
-            Usuario pessoa = usuarioRepository.findByEmail(email)
-                    .orElseThrow(() -> new UsernameNotFoundException("Email não encontrado: " + email));
+        Usuario pessoa = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Email não encontrado: " + email));
 
-            return org.springframework.security.core.userdetails.User
-                    .withUsername(email)
-                    .password(pessoa.getSenha())
-                    .authorities(pessoa.getRole().name())
-                    .accountExpired(false)
-                    .accountLocked(false)
-                    .credentialsExpired(false)
-                    .disabled(false)
-                    .build();
-        } catch (UsernameNotFoundException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao carregar usuário com email: " + email + ". Detalhes: " + e.getMessage());
-        }
+        return org.springframework.security.core.userdetails.User
+                .withUsername(pessoa.getEmail())
+                .password(pessoa.getSenha())
+                .authorities(pessoa.getRole().name())
+                .accountExpired(false)
+                .accountLocked(false)
+                .credentialsExpired(false)
+                .disabled(false)
+                .build();
     }
 
     public Usuario userConnected() {
@@ -48,4 +42,14 @@ public class UserDetailsService implements org.springframework.security.core.use
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com o email: ", email));
     }
 
+    public UserDetails loadUserById(Long id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com ID: " + id));
+
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(usuario.getEmail())
+                .password(usuario.getSenha())
+                .authorities(usuario.getRole().name())
+                .build();
+    }
 }
