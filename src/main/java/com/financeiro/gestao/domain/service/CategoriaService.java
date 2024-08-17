@@ -1,12 +1,9 @@
 package com.financeiro.gestao.domain.service;
 
-import com.financeiro.gestao.api.dto.CategoriaDTO;
-import com.financeiro.gestao.domain.exception.BusinessRuleException;
-import com.financeiro.gestao.domain.exception.ResourceNotFoundException;
 import com.financeiro.gestao.domain.model.Categoria;
 import com.financeiro.gestao.domain.model.enums.TipoCategoria;
 import com.financeiro.gestao.domain.repository.CategoriaRepository;
-import com.financeiro.gestao.util.EntityToDTOConverter;
+import com.financeiro.gestao.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,94 +12,36 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class CategoriaService {
 
-    private final CategoriaRepository categoriaRepository;
-
     @Autowired
-    public CategoriaService(CategoriaRepository categoriaRepository) {
-        this.categoriaRepository = categoriaRepository;
+    private CategoriaRepository categoriaRepository;
+
+    public Categoria findById(Long id) {
+        return categoriaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada com o ID: ", id));
+    }
+
+    public List<Categoria> findAll() {
+        return categoriaRepository.findAll();
     }
 
     @Transactional(readOnly = true)
-    public List<CategoriaDTO> findAll() {
-        List<Categoria> categorias = categoriaRepository.findAll();
-        return categorias.stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public Optional<CategoriaDTO> findById(Long id) {
-        Categoria categoria = categoriaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada com o ID: " + id));
-        return Optional.of(EntityToDTOConverter.convertToDTO(categoria));
-    }
-
-    @Transactional(readOnly = true)
-    public Optional<Categoria> findCategoriaById(Long id) {
-        Categoria categoria = categoriaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada com o ID: " + id));
+    public Optional<Categoria> findByNome(String nome) {
+        Categoria categoria = categoriaRepository.findByNome(nome);
         return Optional.of(categoria);
     }
 
-    @Transactional(readOnly = true)
-    public Optional<CategoriaDTO> findByNome(String nome) {
-        Categoria categoria = categoriaRepository.findByNome(nome)
-                .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada com o nome: " + nome));
-        return Optional.of(EntityToDTOConverter.convertToDTO(categoria));
+    public List<Categoria> findByNomeContaining(String nome) {
+        return categoriaRepository.findByNomeContaining(nome);
     }
 
-    @Transactional(readOnly = true)
-    public List<CategoriaDTO> findByNomeContaining(String nome) {
-        List<Categoria> categorias = categoriaRepository.findByNomeContaining(nome);
-        return categorias.stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public boolean existsByNome(String nome) {
-        return categoriaRepository.existsByNome(nome);
-    }
-
-    @Transactional
-    public Categoria save(Categoria categoria) {
-        validarCategoria(categoria);
-        return categoriaRepository.save(categoria);
-    }
-
-    @Transactional
-    public Categoria update(Long id, Categoria categoriaAtualizada) {
-        Categoria categoria = categoriaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada com o ID: " + id));
-
-        categoria.setNome(categoriaAtualizada.getNome());
-
-        validarCategoria(categoria);
-
-        return categoriaRepository.save(categoria);
-    }
-
-    @Transactional(readOnly = true)
-    public List<CategoriaDTO> findCategoriasByTipoCategoria(String tipo) {
-        TipoCategoria tipoCategoria;
-        try {
-            tipoCategoria = TipoCategoria.valueOf(tipo.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return Collections.emptyList();
-        }
-
-        List<Categoria> categorias = categoriaRepository.findCategoriasByTipoCategoria(tipoCategoria);
-        return categorias.stream()
-                .map(EntityToDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
+    public List<Categoria> findCategoriasByTipoCategoria(TipoCategoria tipo) {
+        return categoriaRepository.findCategoriasByTipoCategoria(tipo);
     }
 
     public Page<Categoria> buscarCategoriasPorTipoPaginado(TipoCategoria tipoCategoria, int page, int size) {
@@ -110,21 +49,23 @@ public class CategoriaService {
         return categoriaRepository.findCategoriasByTipoCategoria(tipoCategoria, pageable);
     }
 
+
     @Transactional
-    public void delete(Long id) {
-        if (!categoriaRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Categoria não encontrada com o ID: " + id);
-        }
-        categoriaRepository.deleteById(id);
+    public Categoria createCategoria(Categoria categoria) {
+        return categoriaRepository.save(categoria);
     }
 
-    private void validarCategoria(Categoria categoria) {
-        if (categoria.getNome() == null || categoria.getNome().trim().isEmpty()) {
-            throw new BusinessRuleException("O nome da categoria não pode estar vazio.");
-        }
+    @Transactional
+    public Categoria updateCategoria(Long id, Categoria categoria) {
+        Categoria existingCategoria = findById(id);
+        existingCategoria.setNome(categoria.getNome());
+        existingCategoria.setTipoCategoria(categoria.getTipoCategoria());
+        return categoriaRepository.save(existingCategoria);
+    }
 
-        if (categoriaRepository.existsByNome(categoria.getNome())) {
-            throw new BusinessRuleException("Já existe uma categoria cadastrada com este nome.");
-        }
+    @Transactional
+    public void deleteCategoria(Long id) {
+        Categoria categoria = findById(id);
+        categoriaRepository.delete(categoria);
     }
 }
