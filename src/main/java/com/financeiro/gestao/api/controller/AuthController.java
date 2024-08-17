@@ -2,55 +2,58 @@ package com.financeiro.gestao.api.controller;
 
 import com.financeiro.gestao.domain.model.Usuario;
 import com.financeiro.gestao.domain.service.UsuarioService;
+import com.financeiro.gestao.security.JwtAuthenticationResponse;
+import com.financeiro.gestao.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping
+@RequestMapping("/auth")
 public class AuthController {
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtTokenProvider tokenProvider;
 
     @Autowired
     private UsuarioService usuarioService;
 
-    @GetMapping("/login")
-    public ModelAndView login() {
-        return new ModelAndView("login");
-    }
+    @PostMapping("/login")
+    public ResponseEntity<?> authenticateUser(@RequestBody Usuario loginRequest) {
 
-    @GetMapping("/register")
-    public ModelAndView register() {
-        return new ModelAndView("register");
-    }
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getEmail(),
+                        loginRequest.getSenha()
+                )
+        );
 
-    @GetMapping("/home")
-    public ModelAndView home() {
-        return new ModelAndView("home");
-    }
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-
-    @GetMapping("/logout")
-    public ModelAndView logout() {
-        return new ModelAndView("login");
+        String jwt = tokenProvider.generateToken(authentication);
+        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
     }
 
     @PostMapping("/register")
-    public ModelAndView registerUser(Usuario usuario, Model model) {
+    public ResponseEntity<String> registerUser(@RequestBody Usuario usuario) {
         if (usuarioService.existsByEmail(usuario.getEmail())) {
-            ModelAndView modelAndView = new ModelAndView("register");
-            modelAndView.addObject("error", "Email já está em uso");
-            return modelAndView;
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email já está em uso");
         }
         usuarioService.createUsuario(usuario);
-        return new ModelAndView("redirect:/auth/login");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Usuário registrado com sucesso");
     }
 
     @GetMapping("/username")
-    public String nameUserConnected(){
-        return usuarioService.getCurrentUserName();
+    public ResponseEntity<String> nameUserConnected(){
+        String username = usuarioService.getCurrentUserName();
+        return ResponseEntity.ok(username);
     }
 }
