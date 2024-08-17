@@ -3,6 +3,7 @@ package com.financeiro.gestao.domain.service;
 import com.financeiro.gestao.domain.model.Usuario;
 import com.financeiro.gestao.domain.repository.UsuarioRepository;
 import com.financeiro.gestao.exception.ResourceNotFoundException;
+import com.financeiro.gestao.util.ValidCPF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -51,6 +52,8 @@ public class UsuarioService {
         }
         if (existsByCpf(usuario.getCpf())) {
             throw new IllegalArgumentException("CPF já está em uso: " + usuario.getCpf());
+        } else {
+            ValidCPF.isValidCPF(usuario.getCpf());
         }
         usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         return usuarioRepository.save(usuario);
