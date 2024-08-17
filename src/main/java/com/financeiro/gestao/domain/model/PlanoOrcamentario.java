@@ -34,12 +34,13 @@ public class PlanoOrcamentario {
     private BigDecimal valorReceita;
     private BigDecimal valorRealizado;
 
+    @Builder.Default
     private boolean ativo = true;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "planoOrcamentario")
     private List<Orcamento> orcamentos;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "planoOrcamentario")
     private List<TransacaoFinanceira> transacoes;
 
     @PrePersist

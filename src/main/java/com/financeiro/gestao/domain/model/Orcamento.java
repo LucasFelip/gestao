@@ -23,6 +23,7 @@ public class Orcamento {
 
     private BigDecimal valorPrevisto;
 
+    @Builder.Default
     private boolean ativo = true;
 
     @ManyToOne

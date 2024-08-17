@@ -23,6 +23,7 @@ public class Usuario {
     private String telefone;
 
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private Role role = Role.USER;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")

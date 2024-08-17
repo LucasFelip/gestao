@@ -36,6 +36,10 @@ public class TransacaoFinanceira {
     @Column(nullable = false)
     private TipoTransacao tipoTransacao;
 
+    @ManyToOne
+    @JoinColumn(name = "plano_orcamentario_id")
+    private PlanoOrcamentario planoOrcamentario;
+
     @PrePersist
     @PreUpdate
     public void aoRegistrarTransacao() {
