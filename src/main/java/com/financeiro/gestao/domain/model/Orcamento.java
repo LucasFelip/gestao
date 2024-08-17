@@ -32,4 +32,14 @@ public class Orcamento {
     public void desativar() {
         this.ativo = false;
     }
+
+    public void validarOrcamento() {
+        if (valorPrevisto.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("O valor previsto deve ser positivo.");
+        }
+
+        if (categoria == null) {
+            throw new IllegalArgumentException("A categoria do orçamento não pode ser nula.");
+        }
+    }
 }
