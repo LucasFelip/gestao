@@ -32,8 +32,8 @@ public class RelatorioFinanceiro {
     @JoinColumn(name = "transacao_financeira_id")
     private List<TransacaoFinanceira> transacoes;
 
-    private BigDecimal totalGastos;
-    private BigDecimal totalLucros;
+    private BigDecimal totalDespesa;
+    private BigDecimal totalReceita;
     private BigDecimal saldoFinal;
 
     @ManyToOne
@@ -43,16 +43,16 @@ public class RelatorioFinanceiro {
     @PrePersist
     @PreUpdate
     private void calcularTotais() {
-        totalGastos = transacoes.stream()
+        totalDespesa = transacoes.stream()
                 .filter(transacao -> transacao.getTipoTransacao() == TipoTransacao.DESPESA)
                 .map(TransacaoFinanceira::getValor)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        totalLucros = transacoes.stream()
+        totalReceita = transacoes.stream()
                 .filter(transacao -> transacao.getTipoTransacao() == TipoTransacao.RECEITA)
                 .map(TransacaoFinanceira::getValor)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        saldoFinal = totalLucros.subtract(totalGastos);
+        saldoFinal = totalReceita.subtract(totalDespesa);
     }
 }
