@@ -31,14 +31,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String jwt = getJwtFromRequest(request);
 
+        // Log para verificação do token
+        System.out.println("Token recebido: " + jwt);
+
         if (jwt != null && tokenProvider.validateToken(jwt)) {
             Long userId = tokenProvider.getUserIdFromJWT(jwt);
+            System.out.println("ID do usuário do token: " + userId);
 
             UserDetails userDetails = userDetailsService.loadUserById(userId);
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            if (userDetails != null) {
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                System.out.println("Usuário autenticado: " + userDetails.getUsername());
+            } else {
+                System.out.println("Nenhum usuário encontrado para o ID: " + userId);
+            }
+        } else {
+            System.out.println("Token JWT inválido ou não encontrado.");
         }
 
         filterChain.doFilter(request, response);

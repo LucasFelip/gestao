@@ -3,6 +3,7 @@ package com.financeiro.gestao.domain.service;
 import com.financeiro.gestao.domain.model.Usuario;
 import com.financeiro.gestao.domain.repository.UsuarioRepository;
 import com.financeiro.gestao.exception.ResourceNotFoundException;
+import com.financeiro.gestao.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,15 +22,7 @@ public class UserDetailsService implements org.springframework.security.core.use
         Usuario pessoa = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Email não encontrado: " + email));
 
-        return org.springframework.security.core.userdetails.User
-                .withUsername(pessoa.getEmail())
-                .password(pessoa.getSenha())
-                .authorities(pessoa.getRole().name())
-                .accountExpired(false)
-                .accountLocked(false)
-                .credentialsExpired(false)
-                .disabled(false)
-                .build();
+        return new CustomUserDetails(pessoa);
     }
 
     public Usuario userConnected() {
@@ -46,10 +39,6 @@ public class UserDetailsService implements org.springframework.security.core.use
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com ID: " + id));
 
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(usuario.getEmail())
-                .password(usuario.getSenha())
-                .authorities(usuario.getRole().name())
-                .build();
+        return new CustomUserDetails(usuario);
     }
 }

@@ -4,7 +4,6 @@ import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import com.financeiro.gestao.domain.model.Usuario;
 
 import java.util.Date;
 
@@ -18,13 +17,13 @@ public class JwtTokenProvider {
     private long jwtExpirationMs;
 
     public String generateToken(Authentication authentication) {
-        Usuario usuario = (Usuario) authentication.getPrincipal();
+        CustomUserDetails userPrincipal = (CustomUserDetails) authentication.getPrincipal();
 
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
 
         return Jwts.builder()
-                .setSubject(usuario.getId().toString())
+                .setSubject(Long.toString(userPrincipal.getId()))
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
@@ -44,8 +43,17 @@ public class JwtTokenProvider {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
             return true;
-        } catch (SignatureException | MalformedJwtException | ExpiredJwtException | UnsupportedJwtException | IllegalArgumentException ex) {
-            return false;
+        } catch (SignatureException ex) {
+            System.out.println("Assinatura JWT inválida.");
+        } catch (MalformedJwtException ex) {
+            System.out.println("Token JWT malformado.");
+        } catch (ExpiredJwtException ex) {
+            System.out.println("Token JWT expirado.");
+        } catch (UnsupportedJwtException ex) {
+            System.out.println("Token JWT não suportado.");
+        } catch (IllegalArgumentException ex) {
+            System.out.println("JWT claims string está vazia.");
         }
+        return false;
     }
 }
