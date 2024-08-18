@@ -20,7 +20,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null; // Retorne as autoridades/grupos conforme sua lógica de negócio
+        return null;
     }
 
     @Override
