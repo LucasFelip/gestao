@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Controller
-@RequestMapping("/api/planos-orcamentarios")
+@RequestMapping("/planos-orcamentarios")
 public class PlanoOrcamentoController {
 
     @Autowired

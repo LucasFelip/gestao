@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Controller
-@RequestMapping("/api/transacoes-financeiras")
+@RequestMapping("/transacoes-financeiras")
 public class TransacaoFinanceiraController {
 
     @Autowired

@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Controller
-@RequestMapping("/api/relatorios-financeiros")
+@RequestMapping("/relatorios-financeiros")
 public class RelatorioFinanceiroController {
 
     @Autowired
