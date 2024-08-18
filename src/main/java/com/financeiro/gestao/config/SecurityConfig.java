@@ -37,11 +37,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(unauthorizedHandler))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll() // Permite o acesso sem autenticação para login e registro
-                        .anyRequest().authenticated() // Requer autenticação para qualquer outra requisição
+                        .requestMatchers("/auth/**").permitAll()
+                        .anyRequest().authenticated()
                 );
 
-        // Adiciona o filtro JWT antes do filtro de autenticação
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
