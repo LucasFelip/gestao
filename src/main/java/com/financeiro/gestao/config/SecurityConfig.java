@@ -36,7 +36,6 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(unauthorizedHandler))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll() // Permite o acesso sem autenticação para login e registro
                         .anyRequest().authenticated() // Requer autenticação para qualquer outra requisição
