@@ -9,6 +9,9 @@ import org.springframework.web.context.request.WebRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -17,18 +20,36 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
         logger.error("Resource not found: {}", ex.getMessage());
-        return new ResponseEntity<>(ex.getMessage(), ex.getStatus());
+
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("error", "Resource Not Found");
+        responseBody.put("message", ex.getMessage());
+        responseBody.put("status", ex.getStatus().value());
+
+        return new ResponseEntity<>(responseBody, ex.getStatus());
     }
 
     @ExceptionHandler(BusinessRuleException.class)
     public ResponseEntity<Object> handleBusinessRuleException(BusinessRuleException ex, WebRequest request) {
         logger.error("Business rule violation: {}", ex.getMessage());
-        return new ResponseEntity<>(ex.getMessage(), ex.getStatus());
+
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("error", "Business Rule Violation");
+        responseBody.put("message", ex.getMessage());
+        responseBody.put("status", ex.getStatus().value());
+
+        return new ResponseEntity<>(responseBody, ex.getStatus());
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleGlobalException(Exception ex, WebRequest request) {
         logger.error("An unexpected error occurred: {}", ex.getMessage());
-        return new ResponseEntity<>("An unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("error", "Internal Server Error");
+        responseBody.put("message", ex.getMessage());
+        responseBody.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+
+        return new ResponseEntity<>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
