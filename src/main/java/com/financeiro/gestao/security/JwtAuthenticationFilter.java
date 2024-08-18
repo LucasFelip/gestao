@@ -13,6 +13,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -25,31 +27,38 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String jwt = getJwtFromRequest(request);
 
-        // Log para verificação do token
-        System.out.println("Token recebido: " + jwt);
+        logger.info("JWT Token received: {}", jwt);
 
-        if (jwt != null && tokenProvider.validateToken(jwt)) {
-            Long userId = tokenProvider.getUserIdFromJWT(jwt);
-            System.out.println("ID do usuário do token: " + userId);
+        try {
+            if (jwt != null && tokenProvider.validateToken(jwt)) {
+                Long userId = tokenProvider.getUserIdFromJWT(jwt);
+                logger.info("User ID extracted from token: {}", userId);
 
-            UserDetails userDetails = userDetailsService.loadUserById(userId);
-            if (userDetails != null) {
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                UserDetails userDetails = userDetailsService.loadUserById(userId);
+                if (userDetails != null) {
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                System.out.println("Usuário autenticado: " + userDetails.getUsername());
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                    logger.info("User authenticated: {}", userDetails.getUsername());
+                } else {
+                    logger.warn("No user found for the extracted user ID: {}", userId);
+                }
             } else {
-                System.out.println("Nenhum usuário encontrado para o ID: " + userId);
+                logger.warn("Invalid or missing JWT token.");
             }
-        } else {
-            System.out.println("Token JWT inválido ou não encontrado.");
+        } catch (ExpiredJwtException ex) {
+            logger.error("JWT token is expired", ex);
+        } catch (Exception ex) {
+            logger.error("Could not set user authentication in security context", ex);
         }
 
         filterChain.doFilter(request, response);
