@@ -75,6 +75,16 @@ public class OrcamentoService {
         return orcamentoRepository.save(orcamento);
     }
 
+    @Transactional
+    public String desativarOrcamento(Long id) {
+        Orcamento orcamento = findById(id);
+        if (orcamento.isAtivo()) {
+            orcamento.desativar();
+            return "Orçamento desativo com sucesso";
+        }
+        return "Erro ao desativar orçamento, verifique se o mesmo esta ativo";
+    }
+
 
     @Transactional
     public Orcamento updateOrcamento(Long id, Orcamento orcamento) {

@@ -40,18 +40,6 @@ public class TransacaoFinanceira {
     @JoinColumn(name = "plano_orcamentario_id")
     private PlanoOrcamentario planoOrcamentario;
 
-    @PrePersist
-    @PreUpdate
-    public void aoRegistrarTransacao() {
-        if (tipoTransacao == TipoTransacao.DESPESA) {
-            for (PlanoOrcamentario plano : usuario.getPlanosOrcamentarios()) {
-                if (!data.isBefore(plano.getDataInicio()) && !data.isAfter(plano.getDataFim())) {
-                    plano.verificarDesativacaoOrcamento(this);
-                }
-            }
-        }
-    }
-
     public void validarTransacao() {
         if (valor.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("O valor da transação deve ser positivo.");

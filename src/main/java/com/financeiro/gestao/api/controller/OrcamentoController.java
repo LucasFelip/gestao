@@ -55,6 +55,12 @@ public class OrcamentoController {
         return ResponseEntity.ok(novoOrcamento);
     }
 
+    @PostMapping("/desativar/{id}")
+    public ResponseEntity<String> desativarOrcamento(@PathVariable Long id) {
+        String result =  orcamentoService.desativarOrcamento(id);
+        return ResponseEntity.ok(result);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Orcamento> updateOrcamento(
             @PathVariable Long id,
