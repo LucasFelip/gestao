@@ -43,6 +43,12 @@ public class AuthController {
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<String> logoutUser() {
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok("Logout realizado com sucesso");
+    }
+
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody Usuario usuario) {
         if (usuarioService.existsByEmail(usuario.getEmail())) {
