@@ -41,12 +41,12 @@ public class CategoriaService {
     }
 
     public List<Categoria> findCategoriasByTipoCategoria(TipoCategoria tipo) {
-        return categoriaRepository.findCategoriasByTipoCategoria(tipo);
+        return categoriaRepository.findAllCategoriasByTipoCategoria(tipo);
     }
 
     public Page<Categoria> buscarCategoriasPorTipoPaginado(TipoCategoria tipoCategoria, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("nome").ascending());
-        return categoriaRepository.findCategoriasByTipoCategoria(tipoCategoria, pageable);
+        return categoriaRepository.findPagedCategoriasByTipoCategoria(tipoCategoria, pageable);
     }
 
 

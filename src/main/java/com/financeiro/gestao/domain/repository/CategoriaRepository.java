@@ -13,7 +13,7 @@ import java.util.List;
 public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
     Categoria findByNome(String nome);
     List<Categoria> findByNomeContaining(String nome);
-    List<Categoria> findCategoriasByTipoCategoria(TipoCategoria tipoCategoria);
-    Page<Categoria> findCategoriasByTipoCategoria(TipoCategoria tipoCategoria, Pageable pageable);
+    Page<Categoria> findPagedCategoriasByTipoCategoria(TipoCategoria tipoCategoria, Pageable pageable);
+    List<Categoria> findAllCategoriasByTipoCategoria(TipoCategoria tipoCategoria);
 }
 
