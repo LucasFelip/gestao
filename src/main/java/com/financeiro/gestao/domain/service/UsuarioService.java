@@ -63,6 +63,7 @@ public class UsuarioService {
     public Usuario updateUsuario(Usuario usuario) {
         Usuario existingUser = findById(usuario.getId());
         existingUser.setNome(usuario.getNome());
+        existingUser.setCpf(usuario.getCpf());
         existingUser.setEmail(usuario.getEmail());
         if (!usuario.getSenha().isEmpty()) {
             existingUser.setSenha(passwordEncoder.encode(usuario.getSenha()));
@@ -84,6 +85,7 @@ public class UsuarioService {
     public String getCurrentUserName() {
         return getCurrentUser().getNome();
     }
+
     @Transactional
     public Usuario updateCurrentUser(Usuario usuario) {
         Usuario currentUser = getCurrentUser();
