@@ -4,6 +4,7 @@ import com.financeiro.gestao.domain.model.Usuario;
 import com.financeiro.gestao.domain.repository.UsuarioRepository;
 import com.financeiro.gestao.exception.ResourceNotFoundException;
 import com.financeiro.gestao.util.ValidCPF;
+import com.financeiro.gestao.util.ValidPassword;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -47,20 +48,14 @@ public class UsuarioService {
 
     @Transactional
     public Usuario createUsuario(Usuario usuario) {
-        if (existsByEmail(usuario.getEmail())) {
-            throw new IllegalArgumentException("Email já está em uso: " + usuario.getEmail());
-        }
-        if (existsByCpf(usuario.getCpf())) {
-            throw new IllegalArgumentException("CPF já está em uso: " + usuario.getCpf());
-        } else {
-            ValidCPF.isValidCPF(usuario.getCpf());
-        }
+        validarUsuario(usuario);
         usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         return usuarioRepository.save(usuario);
     }
 
     @Transactional
     public Usuario updateUsuario(Usuario usuario) {
+        validarUsuario(usuario);
         Usuario existingUser = findById(usuario.getId());
         existingUser.setNome(usuario.getNome());
         existingUser.setCpf(usuario.getCpf());
@@ -101,4 +96,29 @@ public class UsuarioService {
         return usuarioRepository.findByNomeOrEmail(username, email)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com o username ou email: ", username + " / " + email));
     }
+
+    public void validarUsuario(Usuario usuario) {
+        if (existsByEmail(usuario.getEmail())) {
+            throw new IllegalArgumentException("Email já está em uso: " + usuario.getEmail());
+        }
+
+        if (existsByCpf(usuario.getCpf())) {
+            throw new IllegalArgumentException("CPF já está em uso: " + usuario.getCpf());
+        }
+
+        if (!ValidCPF.isValidCPF(usuario.getCpf())) {
+            throw new IllegalArgumentException("CPF inválido: " + usuario.getCpf());
+        }
+
+        if (usuario.getSenha() == null || usuario.getSenha().isEmpty()) {
+            throw new IllegalArgumentException("A senha não pode estar vazia.");
+        }
+
+        List<String> errosSenha = ValidPassword.validatePassword(usuario.getSenha());
+        if (!errosSenha.isEmpty()) {
+            String mensagemErros = String.join(", ", errosSenha);
+            throw new IllegalArgumentException("A senha não atende aos seguintes requisitos: " + mensagemErros);
+        }
+    }
+
 }
