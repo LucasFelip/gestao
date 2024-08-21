@@ -95,6 +95,12 @@ public class PlanoOrcamentarioService {
     }
 
     @Transactional
+    public void calculaValores(Long id) {
+        PlanoOrcamentario planoOrcamentario = findById(id);
+        planoOrcamentario.calcularValores();
+    }
+
+    @Transactional
     public PlanoOrcamentario activatePlanoOrcamentario(Long id) {
         PlanoOrcamentario planoOrcamentario = findById(id);
         planoOrcamentario.desativarPlano();

@@ -24,6 +24,9 @@ public class TransacaoFinanceiraService {
     private TransacaoFinanceiraRepository transacaoFinanceiraRepository;
 
     @Autowired
+    private PlanoOrcamentarioService planoOrcamentarioService;
+
+    @Autowired
     private UserDetailsService userDetailsService;
 
     public TransacaoFinanceira findById(Long id) {
@@ -60,6 +63,7 @@ public class TransacaoFinanceiraService {
             transacao.setData(LocalDate.now());
         }
         transacao.validarTransacao();
+        planoOrcamentarioService.calculaValores(transacao.getPlanoOrcamentario().getId());
         return transacaoFinanceiraRepository.save(transacao);
     }
 
@@ -75,19 +79,21 @@ public class TransacaoFinanceiraService {
     }
 
     @Transactional
-    public TransacaoFinanceira updateTransacao( TransacaoFinanceira transacao) {
+    public TransacaoFinanceira updateTransacao(TransacaoFinanceira transacao) {
         TransacaoFinanceira existingTransacao= findById(transacao.getId());
         existingTransacao.setDescricao(transacao.getDescricao());
         existingTransacao.setCategoria(transacao.getCategoria());
         existingTransacao.setValor(transacao.getValor());
         existingTransacao.setData(transacao.getData());
         existingTransacao.validarTransacao();
+        planoOrcamentarioService.calculaValores(existingTransacao.getPlanoOrcamentario().getId());
         return transacaoFinanceiraRepository.save(existingTransacao);
     }
 
     @Transactional
     public void deleteTransacao(Long id) {
-        TransacaoFinanceira transacao= findById(id);
+        TransacaoFinanceira transacao = findById(id);
         transacaoFinanceiraRepository.delete(transacao);
+        planoOrcamentarioService.calculaValores(transacao.getPlanoOrcamentario().getId());
     }
 }
