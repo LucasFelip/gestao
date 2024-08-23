@@ -35,12 +35,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String jwt = getJwtFromRequest(request);
 
-        logger.info("JWT Token received: {}", jwt);
-
         try {
             if (jwt != null && tokenProvider.validateToken(jwt)) {
                 Long userId = tokenProvider.getUserIdFromJWT(jwt);
-                logger.info("User ID extracted from token: {}", userId);
 
                 UserDetails userDetails = userDetailsService.loadUserById(userId);
                 if (userDetails != null) {
@@ -48,7 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-                    logger.info("User authenticated: {}", userDetails.getUsername());
+                    logger.info("User authenticated: {}", userId);
                 } else {
                     logger.warn("No user found for the extracted user ID: {}", userId);
                 }
