@@ -1,5 +1,6 @@
 package com.financeiro.gestao.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.financeiro.gestao.domain.model.enums.TipoTransacao;
 import lombok.*;
 import jakarta.persistence.*;
@@ -21,6 +22,7 @@ public class TransacaoFinanceira {
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
+    @JsonIgnore
     private Usuario usuario;
 
     private String descricao;
@@ -38,6 +40,7 @@ public class TransacaoFinanceira {
 
     @ManyToOne
     @JoinColumn(name = "plano_orcamentario_id")
+    @JsonIgnore
     private PlanoOrcamentario planoOrcamentario;
 
     public void validarTransacao() {

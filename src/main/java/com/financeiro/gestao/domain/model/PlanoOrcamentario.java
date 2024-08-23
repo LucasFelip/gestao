@@ -1,5 +1,6 @@
 package com.financeiro.gestao.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.financeiro.gestao.domain.model.enums.TipoTransacao;
 import lombok.*;
 import jakarta.persistence.*;
@@ -24,6 +25,7 @@ public class PlanoOrcamentario {
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
+    @JsonIgnore
     private Usuario usuario;
 
     private LocalDate dataInicio;
@@ -38,9 +40,11 @@ public class PlanoOrcamentario {
     private boolean ativo = true;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "planoOrcamentario")
+    @JsonIgnore
     private List<Orcamento> orcamentos;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "planoOrcamentario")
+    @JsonIgnore
     private List<TransacaoFinanceira> transacoes;
 
     @PrePersist
