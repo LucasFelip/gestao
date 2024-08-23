@@ -1,5 +1,6 @@
 package com.financeiro.gestao.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.financeiro.gestao.domain.model.enums.Role;
 import lombok.*;
 import jakarta.persistence.*;
@@ -27,8 +28,10 @@ public class Usuario {
     private Role role = Role.USER;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
+    @JsonIgnore
     private List<TransacaoFinanceira> transacoes;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
+    @JsonIgnore
     private List<PlanoOrcamentario> planosOrcamentarios;
 }

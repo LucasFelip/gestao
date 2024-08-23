@@ -61,12 +61,6 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioAtualizado);
     }
 
-    @PutMapping("/current")
-    public ResponseEntity<Usuario> updateCurrentUser(@RequestBody Usuario usuario) {
-        Usuario usuarioAtualizado = usuarioService.updateCurrentUser(usuario);
-        return ResponseEntity.ok(usuarioAtualizado);
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUsuario(@PathVariable Long id) {
         usuarioService.deleteUsuario(id);
