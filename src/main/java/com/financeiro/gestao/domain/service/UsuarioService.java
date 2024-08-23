@@ -73,10 +73,12 @@ public class UsuarioService {
         usuarioRepository.delete(usuario);
     }
 
+    @Transactional
     public Usuario getCurrentUser() {
         return userDetailsService.userConnected();
     }
 
+    @Transactional
     public String getCurrentUserName() {
         return getCurrentUser().getNome();
     }
